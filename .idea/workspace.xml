@@ -2,27 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6072a822-c4c8-4192-b273-d7fca1dacff7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Build2/controller.tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/checkbox.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/date.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/datetime.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/image.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/input.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/radio.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/select.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/simditor.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/forms/textarea.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/request.tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/views/create.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/views/edit.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/views/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/views/mobile.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Build2/views/show.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Commands/AutoNameCreateCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Traits/CreateView2.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/laravel-autocreate.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-autocreate.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Commands/AutoCreateCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Commands/AutoCreateCommand.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServiceProvider.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,6 +48,7 @@
       <updated>1636451322016</updated>
       <workItem from="1636451325093" duration="81000" />
       <workItem from="1637121126463" duration="2156000" />
+      <workItem from="1639099319265" duration="67000" />
     </task>
     <servers />
   </component>
@@ -83,5 +65,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
