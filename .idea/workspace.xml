@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6072a822-c4c8-4192-b273-d7fca1dacff7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/laravel-autocreate.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-autocreate.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServiceProvider.php" afterDir="false" />
     </list>
@@ -29,6 +28,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Traits" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -48,7 +48,7 @@
       <updated>1636451322016</updated>
       <workItem from="1636451325093" duration="81000" />
       <workItem from="1637121126463" duration="2156000" />
-      <workItem from="1639099319265" duration="67000" />
+      <workItem from="1639099319265" duration="455000" />
     </task>
     <servers />
   </component>
