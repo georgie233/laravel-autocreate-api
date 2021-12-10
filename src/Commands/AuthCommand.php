@@ -59,6 +59,7 @@ class AuthCommand extends Base
 Route::group(['prefix' => 'admin'], function () {
     Route::post('login', 'AdminLoginController@login');
     Route::post('register', 'AdminLoginController@register');
+    Route::post('info', 'AdminLoginController@info');
     Route::post('checkToken', 'AdminLoginController@checkToken');
 });
 str;
