@@ -80,7 +80,9 @@ str;
 
     public function copySeeds()
     {
-
+        $a = __DIR__ . '/../dis/seeds';
+        $b = base_path("database/seeds");
+        $this->xCopy($a, $b);
     }
 
     public function copyController()
