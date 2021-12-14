@@ -61,16 +61,28 @@ class AutoApiCommand extends Command
         $this->title = $this->argument('title');
         $this->setVar('MODEL_TITLE', $this->title);
         $this->setModelInstance();
-        $this->setModelFillable();
+        $this->setModelFillable();//设置fillable
+        $this->setModelRelation();//设置模型关联
 
-        $arr = $this->formatColumns();
-        $this->info(json_encode($arr));
         //---
 //        $this->createController();
 //        $this->createRequest();
 //        $this->createRoute();
 //        $this->createViews();
-//        $this->setModuleMenus();
+    }
+
+    protected function setModelRelation()
+    {
+        $arr = ['user', 'select'];
+        $columns = $this->formatColumns();
+        foreach ($columns as $column) {
+            if (isset($column['options']) && count($column['options']) >= 2) {
+                if (in_array($column['options'][1], $arr)) {//符合关联关系处理
+                    $action = 'relation_' . $column['options'][1];
+                    $this->$action($column['options'][2]);
+                }
+            }
+        }
     }
 
     protected function setModelInstance()
@@ -78,27 +90,6 @@ class AutoApiCommand extends Command
         $this->modelInstance = new $this->modelClass;
     }
 
-    protected function setModuleMenus()
-    {
-        $file = $this->getVar('MODULE_PATH') . '/Config/menus.php';
-        $menus = include $file;
-        if (!isset($menus[$this->getVar('SMODULE')])) {
-            $menus[$this->getVar('SMODULE')] = [
-                "title" => "{$this->title}管理",
-                "icon" => "fa fa-navicon",
-                'permission' => '权限标识',
-                "menus" => [],
-            ];
-        }
-        $menus[$this->getVar('SMODULE')]['menus'][] =
-            [
-                "title" => "{$this->title}管理",
-                "permission" => '',
-                "url" => "/{$this->vars['SMODULE']}/{$this->vars['SMODEL']}",
-            ];
-        file_put_contents($file, '<?php return ' . var_export($menus, true) . ';');
-        $this->info('menu create successfully');
-    }
 
     protected function setModelFillable()
     {
@@ -237,11 +228,6 @@ str;
         $this->info('request create successflly');
     }
 
-    /**
-     * 设置验证规则
-     *
-     * @return array
-     */
     protected function getRequestRule()
     {
         $columns = $this->formatColumns();
@@ -256,11 +242,6 @@ str;
         return $rules;
     }
 
-    /**
-     * 验证提示信息
-     *
-     * @return array
-     */
     protected function getRequestRuleMessage()
     {
         $columns = $this->formatColumns();
@@ -274,4 +255,46 @@ str;
 
         return $rules;
     }
+
+    protected function relation_user($data)
+    {
+        $this->_relation_fun($data['user']);
+    }
+
+    protected function relation_select($data)
+    {
+        $this->_relation_fun($data['select']);
+    }
+
+    protected function _relation_fun($data)
+    {
+        if ($data['module'] == "") {//app下的模型
+            $modelFileUrl = app_path(ucfirst($data['model']) . '.php');
+            $name = '\App\\' . ucfirst($data['model']) . '::class';
+        } else {
+            $modelFileUrl = config('modules.paths.modules') . '/' . ucfirst($data['module']) . '/'
+                . config('modules.paths.generator.model.path') . '/' . ucfirst($data['model']) . '.php';
+            $name = '\Modules' . ucfirst($data['module']) . '\Entities\\' . ucfirst($data['model']) . '::class';
+        }
+
+        $myFunName = lcfirst($data['model']);//我的方法
+        $otherFunName = lcfirst($this->model);//对方模型里方法
+        $this->info($modelFileUrl);
+        $this->info($name);
+
+        //为本方法植入关联
+        $content = file_get_contents($this->modelFile);
+        if (stristr('function ' . $myFunName, $content) === false) {
+            $content = substr($content,0,strrpos($content, '}'));
+            $this->info('function ' . $myFunName);
+//            $this->info($content);
+//            substr(string,start,length)
+        }
+    }
+//    public function book(){
+//        return $this->hasMany(\Modules\Book\Entities\Book::class,'user_id');
+//    }
+//    public function user(){
+//        return $this->belongsTo(\App\User::class,'user_id');
+//    }
 }
