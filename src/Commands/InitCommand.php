@@ -4,6 +4,8 @@
 namespace Georgie\AutoAPi\Commands;
 
 
+use Psy\Util\Str;
+
 class InitCommand extends Base
 {
     /**
@@ -28,6 +30,7 @@ class InitCommand extends Base
     public function handle()
     {
         $this->handleVue();
+        $this->handleComposer();
     }
 
     protected function handleVue()
@@ -42,5 +45,23 @@ class InitCommand extends Base
 //        } catch (\Exception $exception) {
 //            $this->error($exception->getMessage());
 //        }
+    }
+
+    protected function handleComposer()
+    {
+        $url = base_path('composer.json');
+        $str = <<<str
+"app/",
+            "Modules\\
+str;
+        $str2 = <<<str
+"app/",
+            "Modules\\\\": "Modules/"
+str;
+        $content = file_get_contents($url);
+        if (stristr($content, $str) === false) {
+            $content = str_replace('"app/"', $str2, $content);
+            file_put_contents($url, $content);
+        }
     }
 }

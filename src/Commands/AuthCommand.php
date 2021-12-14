@@ -67,7 +67,6 @@ str;
         file_put_contents($url, $content);
 
 
-
         $this->info("init success");
     }
 
@@ -98,16 +97,18 @@ str;
         $b = base_path("database/migrations");
         $this->xCopy($a, $b);
     }
-    public function initLang(){
+
+    public function initLang()
+    {
         //copy lang
-        $a = __DIR__.'/../dis/lang';
+        $a = __DIR__ . '/../dis/lang';
         $b = base_path('resources/lang');
-        $this->xCopy($a,$b,1);
+        $this->xCopy($a, $b, 1);
 
         $url = base_path('config/app.php');
         $content = file_get_contents($url);
-        $content = str_replace("'timezone' => 'UTC'","'timezone' => 'PRC'",$content);
-        $content = str_replace("'locale' => 'en'","'locale' => 'zh-CN'",$content);
-        file_put_contents($url,$content);
+        $content = str_replace("'timezone' => 'UTC'", "'timezone' => 'PRC'", $content);
+        $content = str_replace("'locale' => 'en'", "'locale' => 'zh-CN'", $content);
+        file_put_contents($url, $content);
     }
 }
