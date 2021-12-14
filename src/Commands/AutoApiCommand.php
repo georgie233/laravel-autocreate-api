@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 use Artisan;
 use Storage;
 
-class AutoCreateCommand extends Command
+class AutoApiCommand extends Command
 {
     use BuildVars, Db, CreateView;
 
@@ -18,7 +18,7 @@ class AutoCreateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'g:autocreate {model} {module} {title}';
+    protected $signature = 'auto:api {model} {module} {title} {carry=n}';
 
     /**
      * The console command description.
@@ -32,6 +32,7 @@ class AutoCreateCommand extends Command
     protected $modelFile;
     protected $module;
     protected $title;
+    protected $carry;
 
     /**
      * Create a new command instance.
@@ -45,6 +46,7 @@ class AutoCreateCommand extends Command
 
     public function handle()
     {
+        $this->carry = ucfirst($this->argument('carry'));
         $this->model = $this->argument('model');
         $this->module = $this->argument('module');
         $this->modelFile = config('modules.paths.modules') . '/' . $this->module . '/'
@@ -59,13 +61,16 @@ class AutoCreateCommand extends Command
         $this->title = $this->argument('title');
         $this->setVar('MODEL_TITLE', $this->title);
         $this->setModelInstance();
-        $this->setVar();
         $this->setModelFillable();
-        $this->createController();
-        $this->createRequest();
-        $this->createRoute();
-        $this->createViews();
-        $this->setModuleMenus();
+
+        $arr = $this->formatColumns();
+        $this->info(json_encode($arr));
+        //---
+//        $this->createController();
+//        $this->createRequest();
+//        $this->createRoute();
+//        $this->createViews();
+//        $this->setModuleMenus();
     }
 
     protected function setModelInstance()
@@ -198,7 +203,7 @@ str;
                 }
             }
         }
-        $this->setVar('UPDATEINSERT',$str);
+        $this->setVar('UPDATEINSERT', $str);
 
         //dek
         $str = "";
@@ -211,9 +216,7 @@ str;
                 }
             }
         }
-        $this->setVar('DELETEINSERT',$str);
-
-
+        $this->setVar('DELETEINSERT', $str);
 
 
         $content = $this->replaceVars(__DIR__ . '/../Build/controller.tpl');

@@ -3,6 +3,7 @@
 namespace Georgie\AutoAPi;
 
 use Georgie\AutoAPi\Commands\AuthCommand;
+use Georgie\AutoAPi\Commands\AutoApiCommand;
 use Georgie\AutoAPi\Commands\InitCommand;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -21,6 +22,7 @@ class ServiceProvider extends BaseServiceProvider
             $this->commands([
                 InitCommand::class,
                 AuthCommand::class,
+                AutoApiCommand::class
             ]);
         }
     }

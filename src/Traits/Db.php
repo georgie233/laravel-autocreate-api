@@ -1,4 +1,5 @@
 <?php
+
 namespace Georgie\AutoAPi\Traits;
 
 use Doctrine\DBAL\Configuration;
@@ -25,19 +26,19 @@ trait Db
 
     protected function allowColumn($column)
     {
-        return ! in_array($column->getName(), $this->denyColumn);
+        return !in_array($column->getName(), $this->denyColumn);
     }
 
     protected function getDoctrineConnection()
     {
-        $config           = new Configuration();
+        $config = new Configuration();
         $connectionParams = [
-            'dbname'   => config('database.connections.mysql.database'),
-            'user'     => config('database.connections.mysql.username'),
+            'dbname' => config('database.connections.mysql.database'),
+            'user' => config('database.connections.mysql.username'),
             'password' => config('database.connections.mysql.password'),
-            'host'     => config('database.connections.mysql.host'),
-            'driver'   => 'pdo_mysql',
-            'charset'  => config('database.connections.mysql.charset'),
+            'host' => config('database.connections.mysql.host'),
+            'driver' => 'pdo_mysql',
+            'charset' => config('database.connections.mysql.charset'),
         ];
 
         return DriverManager::getConnection($connectionParams, $config);
@@ -45,7 +46,7 @@ trait Db
 
     protected function getTableComment($model)
     {
-        $res  = \DB::select("show create table ".$model->getTable());
+        $res = \DB::select("show create table " . $model->getTable());
         $info = ((array)$res[0]);
         preg_match("@COMMENT='(.*?)'@i", $info['Create Table'], $match);
 
@@ -72,7 +73,7 @@ trait Db
     public function formatColumns()
     {
         $columns = $this->listTableColumns();
-        $data    = [];
+        $data = [];
         foreach ($columns as $column) {
             $data[$column->getName()] = $this->formatComment($column);
         }
@@ -95,13 +96,13 @@ trait Db
     protected function formatComment($column)
     {
         $comment = $column->getComment();
-        $info    = [];
-        if ( ! is_null($comment)) {
+        $info = [];
+        if (!is_null($comment)) {
             $options = explode('|', $comment);
             if (count($options) >= 2) {
-                $info['title']   = $options[0];
-                $info['name']    = $column->getName();
-                $info['nonull']  = $column->getNotNull();
+                $info['title'] = $options[0];
+                $info['name'] = $column->getName();
+                $info['nonull'] = $column->getNotNull();
                 $info['default'] = $column->getDefault();
                 $info['options'] = $this->formatFieldOptions($options);
             }
@@ -114,10 +115,19 @@ trait Db
     {
         if (isset($options[2])) {
             $info = [];
-            foreach (explode(',', $options[2]) as $k => $option) {
-                $tmp           = explode(':', $option);
-                $info[$tmp[0]] = $tmp[1];
+            if (count(explode(',', $options[2])) >= 2)
+                foreach (explode(',', $options[2]) as $k => $option) {
+                    $tmp = explode(':', $option);
+                    $info[$tmp[0]] = $tmp[1];
+                }
+            else if (stristr($options[2],'&')!==false){
+                $text = str_replace('&','',$options[2]);
+                $tmp['module'] = explode('/',$text)[0];
+                $tmp['model'] = explode('/',$text)[1];
+                $info[$options[1]] = $tmp;
+
             }
+            else return $options;
             $options[2] = $info;
         }
 
