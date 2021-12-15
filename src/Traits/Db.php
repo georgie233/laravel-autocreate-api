@@ -124,8 +124,15 @@ trait Db
                 $text = str_replace('&','',$options[2]);
                 $tmp['module'] = explode('/',$text)[0];
                 $tmp['model'] = explode('/',$text)[1];
+                $tmp['relation'] = '&';
                 $info[$options[1]] = $tmp;
-
+            }
+            else if (stristr($options[2],'@')!==false){
+                $text = str_replace('@','',$options[2]);
+                $tmp['module'] = explode('/',$text)[0];
+                $tmp['model'] = explode('/',$text)[1];
+                $tmp['relation'] = '@';
+                $info[$options[1]] = $tmp;
             }
             else return $options;
             $options[2] = $info;

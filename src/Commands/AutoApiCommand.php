@@ -61,8 +61,8 @@ class AutoApiCommand extends Command
         $this->title = $this->argument('title');
         $this->setVar('MODEL_TITLE', $this->title);
         $this->setModelInstance();
-        $this->setModelFillable();//设置fillable
-        $this->setModelRelation();//设置模型关联
+        $this->setModelFillable();//设置fillable √
+        $this->setModelRelation();//设置模型关联 √
 
         //---
 //        $this->createController();
@@ -79,10 +79,11 @@ class AutoApiCommand extends Command
             if (isset($column['options']) && count($column['options']) >= 2) {
                 if (in_array($column['options'][1], $arr)) {//符合关联关系处理
                     $action = 'relation_' . $column['options'][1];
-                    $this->$action($column['options'][2]);
+                    $this->$action($column['options'][2], $column['name']);//传递关联数据和字段名称
                 }
             }
         }
+        $this->info('model relation complete');
     }
 
     protected function setModelInstance()
@@ -256,17 +257,18 @@ str;
         return $rules;
     }
 
-    protected function relation_user($data)
+    protected function relation_user($data, $field)
     {
-        $this->_relation_fun($data['user']);
+        $this->_relation_fun($data['user'], $field, $data['user']['relation'] == '&');
     }
 
-    protected function relation_select($data)
+    protected function relation_select($data, $field)
     {
-        $this->_relation_fun($data['select']);
+        $this->_relation_fun($data['select'], $field, $data['select']['relation'] == '&');
     }
 
-    protected function _relation_fun($data)
+    //处理一对多关系
+    protected function _relation_fun($data, $field, $isMany = false)
     {
         if ($data['module'] == "") {//app下的模型
             $modelFileUrl = app_path(ucfirst($data['model']) . '.php');
@@ -274,27 +276,40 @@ str;
         } else {
             $modelFileUrl = config('modules.paths.modules') . '/' . ucfirst($data['module']) . '/'
                 . config('modules.paths.generator.model.path') . '/' . ucfirst($data['model']) . '.php';
-            $name = '\Modules' . ucfirst($data['module']) . '\Entities\\' . ucfirst($data['model']) . '::class';
+            $name = '\Modules\\' . ucfirst($data['module']) . '\\Entities\\' . ucfirst($data['model']) . '::class';
         }
-
         $myFunName = lcfirst($data['model']);//我的方法
         $otherFunName = lcfirst($this->model);//对方模型里方法
-        $this->info($modelFileUrl);
-        $this->info($name);
 
-        //为本方法植入关联
+        //为本模型植入关联
         $content = file_get_contents($this->modelFile);
-        if (stristr('function ' . $myFunName, $content) === false) {
-            $content = substr($content,0,strrpos($content, '}'));
-            $this->info('function ' . $myFunName);
-//            $this->info($content);
-//            substr(string,start,length)
+        if (strpos($content, 'function ' . $myFunName) === false) {
+            $content = substr($content, 0, strrpos($content, '}'));
+            $content .= <<<str
+
+    public function {$myFunName}(){
+        return \$this->belongsTo({$name},'{$field}');
+    }
+
+}
+str;
+            file_put_contents($this->modelFile, $content);
+        }
+
+        //为对方模型植入关联
+        $t = $isMany ? 'hasMany' : 'hasOne';
+        $content = file_get_contents($modelFileUrl);
+        if (strpos($content, 'function ' . $otherFunName) === false) {
+            $content = substr($content, 0, strrpos($content, '}'));
+            $content .= <<<str
+
+    public function {$otherFunName}(){
+        return \$this->{$t}(\\{$this->modelClass}::class,'{$field}');
+    }
+
+}
+str;
+            file_put_contents($modelFileUrl, $content);
         }
     }
-//    public function book(){
-//        return $this->hasMany(\Modules\Book\Entities\Book::class,'user_id');
-//    }
-//    public function user(){
-//        return $this->belongsTo(\App\User::class,'user_id');
-//    }
 }
