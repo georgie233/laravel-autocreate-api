@@ -154,6 +154,7 @@ str;
         $this->info('route create successfully');
     }
 
+    //创建控制器
     public function createController()
     {
         $file = $this->getVar('CONTROLLER_PATH') . $this->model . 'Controller.php';
@@ -162,53 +163,8 @@ str;
             return false;
         }
 
-        //store
-        $str = "";
-        foreach ($this->formatColumns() as $column) {
-            if (isset($column['options']) && count($column['options']) >= 2) {
-                if ($column['options'][1] == "image") {
-                    $str .= <<<str
-\n
-        \$s = \$this->saveFile(\$request, '{$column["name"]}', '请上传封面图片');
-        if (!is_string(\$s)) return \$s;
-        \$data['{$column["name"]}'] = \$s.'';
-str;
-                }
-            }
-        }
-
-        $this->setVar("STOREINSERT", $str);
-
-        //update
-        $str = "";
-        foreach ($this->formatColumns() as $column) {
-            if (isset($column['options']) && count($column['options']) >= 2) {
-                if ($column['options'][1] == "image") {
-                    $str .= <<<str
-        if (\$this->getRequesFile(\$request,'img')){
-            \$this->delFile(\${$this->vars['SMODEL']}['{$column["name"]}']);
-            \$s = \$this->saveFile(\$request, 'img');
-            if (is_string(\$s)) \$data['{$column["name"]}'] = \$s . '';
-        }
-str;
-
-                }
-            }
-        }
-        $this->setVar('UPDATEINSERT', $str);
-
-        //dek
-        $str = "";
-        foreach ($this->formatColumns() as $column) {
-            if (isset($column['options']) && count($column['options']) >= 2) {
-                if ($column['options'][1] == "image") {
-                    $str .= <<<str
-        \$this->delFile(\${$this->vars['SMODEL']}['{$column["name"]}']);
-str;
-                }
-            }
-        }
-        $this->setVar('DELETEINSERT', $str);
+//        $str = "";
+//        $this->setVar("STOREINSERT", $str);
 
 
         $content = $this->replaceVars(__DIR__ . '/../Build/controller.tpl');
@@ -272,11 +228,11 @@ str;
     {
         if ($data['module'] == "") {//app下的模型
             $modelFileUrl = app_path(ucfirst($data['model']) . '.php');
-            $name = '\App\\' . ucfirst($data['model']) . '::class';
+            $name = '\App\\' . ucfirst($data['model']);
         } else {
             $modelFileUrl = config('modules.paths.modules') . '/' . ucfirst($data['module']) . '/'
                 . config('modules.paths.generator.model.path') . '/' . ucfirst($data['model']) . '.php';
-            $name = '\Modules\\' . ucfirst($data['module']) . '\\Entities\\' . ucfirst($data['model']) . '::class';
+            $name = '\Modules\\' . ucfirst($data['module']) . '\\Entities\\' . ucfirst($data['model']);
         }
         $myFunName = lcfirst($data['model']);//我的方法
         $otherFunName = lcfirst($this->model);//对方模型里方法
@@ -287,8 +243,11 @@ str;
             $content = substr($content, 0, strrpos($content, '}'));
             $content .= <<<str
 
+    public function {$myFunName}Class(){
+        return new {$name};
+    }
     public function {$myFunName}(){
-        return \$this->belongsTo({$name},'{$field}');
+        return \$this->belongsTo(\$this->{$myFunName}Class(),'{$field}');
     }
 
 }
@@ -303,8 +262,11 @@ str;
             $content = substr($content, 0, strrpos($content, '}'));
             $content .= <<<str
 
+    public function {$otherFunName}Class(){
+        return new \\{$this->modelClass};
+    }
     public function {$otherFunName}(){
-        return \$this->{$t}(\\{$this->modelClass}::class,'{$field}');
+        return \$this->{$t}(\$this->{$otherFunName}Class(),'{$field}');
     }
 
 }
