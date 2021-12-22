@@ -28,9 +28,7 @@ class {CONTROLLE_NAME} extends BaseApiController
     //显示记录 GET: /{SMODEL}/id
     public function show({MODEL} $field)
     {
-        if ($this->isAjax) return $this->responseSuccess($field);
-
-        return view('{VIEW_NAME}.show', compact('field'));
+        //代办
     }
 
 
@@ -40,9 +38,7 @@ class {CONTROLLE_NAME} extends BaseApiController
         $data = $request->all();
         {UPDATEINSERT}
         ${SMODEL}->update($data);
-
-        if ($this->isAjax) return $this->responseSuccess(${SMODEL});
-        return redirect('/{ROUTE_ROOT}')->with('success','更新成功');
+        return ResponseHelper::successMsg('修改成功');
     }
 
     //删除模型 DELETE: /{SMODEL}/id
@@ -50,8 +46,6 @@ class {CONTROLLE_NAME} extends BaseApiController
     {
         {DELETEINSERT}
         ${SMODEL}->delete();
-
-        if ($this->isAjax) return $this->responseSuccess([]);
-        return redirect('{ROUTE_ROOT}')->with('success','删除成功');
+        return ResponseHelper::successMsg('删除成功');
     }
 }
