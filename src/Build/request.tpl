@@ -27,6 +27,6 @@ class {MODEL}Request extends FormRequest
 
     public function attributes()
     {
-        return [];
+        return {REQUEST_RULE_ATTRIBUTES};
     }
 }

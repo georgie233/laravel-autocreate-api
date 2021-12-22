@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use App\utils\ResponseHelper;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -40,13 +42,16 @@ class Handler extends ExceptionHandler
 
     /**
      * Render an exception into an HTTP response.
-     *
+     *a
      * @param \Illuminate\Http\Request $request
      * @param \Exception $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof ValidationException) {
+            return ResponseHelper::errorMsg('参数错误', 400, Arr::first(Arr::collapse($exception->errors())));
+        }
         if ($request->is('api/*')) {
             if ($this->isHttpException($exception)) {
                 if ($exception->getStatusCode() == '404') return ResponseHelper::errorMsg('Link does not exist', 404);

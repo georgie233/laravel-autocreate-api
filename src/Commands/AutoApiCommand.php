@@ -59,10 +59,16 @@ class AutoApiCommand extends Command
             return;
         }
         $this->title = $this->argument('title');
-        $this->setVar('MODEL_TITLE', $this->title);
+        $this->setVar('MODEL_TITLE', $this->title);//设置标题
+        $this->setVars();//设置默认参数
         $this->setModelInstance();
         $this->setModelFillable();//设置fillable √
         $this->setModelRelation();//设置模型关联 √
+        $this->createController();//创建控制器 代办
+        $this->createRequest();//设置验证器 √
+        $this->createRoute(); //路由植入 √
+        $this->createViews();//创建视图  代办
+        $this->info('success');
 
         //---
 //        $this->createController();
@@ -83,7 +89,7 @@ class AutoApiCommand extends Command
                 }
             }
         }
-        $this->info('model relation complete');
+//        $this->info('model relation complete');
     }
 
     protected function setModelInstance()
@@ -105,7 +111,15 @@ class AutoApiCommand extends Command
         }
     }
 
-    protected function createViews()
+    //创建视图
+    protected function createViews(){
+        $vue_page_path = base_path('vue-cli/src/pages');//vue页面路径
+        $vue_page_module = base_path('vue-cli/src/pages/'.$this->vars['SMODULE']);//vue页面模块文件夹路径
+        if (!is_dir($vue_page_path))return $this->info('vue-cli Page path non existent');
+        is_dir($vue_page_module) or  mkdir($vue_page_module, 0755, true);
+        $this->createIndexVue();//创建列表页面
+    }
+    protected function createViewsBak()
     {
         $dir = $this->vars['VIEW_PATH'];
         is_dir($dir) or mkdir($dir, 0755, true);
@@ -114,7 +128,51 @@ class AutoApiCommand extends Command
         $this->createCreateAndEditBlade();//创建PC编辑和修改页面
     }
 
+    //创建route（植入）
     protected function createRoute()
+    {
+        if ($this->module) $file = $this->getVar('MODULE_PATH') . '/Http/routes.php';
+        else  $file = 'routes/web.php';
+        $route = file_get_contents($file);
+//        if (strstr($route, "{$this->vars['SMODEL']}-route")) return;//已存在路由跳过
+        $header = $this->vars['MODULE'] . ' Module';
+        if ($this->module) {//模块下
+            if (stristr($route, $header)) {
+                //已存在组
+                $row = "Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');";
+                if (stristr($route, $row))return;
+                else{
+                    $index = strpos($route, $header);
+                    $index = strpos($route, 'function',$index);
+                    $index = strpos($route, '}',$index);
+                    $row .= "\n}";
+                    $route = substr_replace($route,$row,$index,1);
+                    file_put_contents($file, $route);
+                    $this->info('route create successfully');
+                }
+
+            } else {
+                //未存在组
+                $route .= <<<str
+\n
+//{$this->vars['MODULE']} Module
+Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
+function () {
+    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
+});
+str;
+                file_put_contents($file, $route);
+                $this->info('route create successfully');
+            }
+        } else {
+            //web下
+            $this->info('Not supported at the moment');
+        }
+
+    }
+
+
+    protected function createRouteBak()
     {
         if ($this->module) {
             $file = $this->getVar('MODULE_PATH') . '/Http/routes.php';
@@ -160,11 +218,14 @@ str;
         $file = $this->getVar('CONTROLLER_PATH') . $this->model . 'Controller.php';
 
         if (is_file($file)) {
+            //控制器已存在
             return false;
         }
 
-//        $str = "";
-//        $this->setVar("STOREINSERT", $str);
+        $str = "";
+        $this->setVar("STOREINSERT", $str);//代办
+        $this->setVar("UPDATEINSERT", $str);//代办
+        $this->setVar("DELETEINSERT", $str);//代办
 
 
         $content = $this->replaceVars(__DIR__ . '/../Build/controller.tpl');
@@ -181,6 +242,7 @@ str;
         $content = $this->replaceVars(__DIR__ . '/../Build/request.tpl');
         $content = str_replace('{REQUEST_RULE}', var_export($this->getRequestRule(), true), $content);
         $content = str_replace('{REQUEST_RULE_MESSAGE}', var_export($this->getRequestRuleMessage(), true), $content);
+        $content = str_replace('{REQUEST_RULE_ATTRIBUTES}', var_export($this->getRequestRuleAttributes(), true), $content);
         file_put_contents($file, $content);
         $this->info('request create successflly');
     }
@@ -192,7 +254,12 @@ str;
         foreach ($columns as $column) {
             $check = $column && in_array($column['name'], $this->modelInstance->getFillAble());
             if ($check && $column['nonull']) {
-                $rules[$column['name']] = 'required';
+                //存在于模型的fill并且数据库要求是不为空
+                $check2 = count($column['options']) <= 2 || count($column['options']) > 2 && $column['options'][1] !== 'user';
+                if ($check2)//关联字段排除user填充
+                {
+                    $rules[$column['name']] = 'required';
+                }
             }
         }
 
@@ -206,7 +273,21 @@ str;
         foreach ($columns as $column) {
             $check = $column && in_array($column['name'], $this->modelInstance->getFillAble());
             if ($check && $column['nonull']) {
-                $rules[$column['name'] . '.required'] = "请设置 " . $column['title'];
+                $rules[$column['name'] . '.required'] = $column['title'] . ' 不能为空';
+            }
+        }
+
+        return $rules;
+    }
+
+    public function getRequestRuleAttributes()
+    {
+        $columns = $this->formatColumns();
+        $rules = [];
+        foreach ($columns as $column) {
+            $check = $column && in_array($column['name'], $this->modelInstance->getFillAble());
+            if ($check && $column['nonull']) {
+                $rules[$column['name']] = $column['title'];
             }
         }
 
