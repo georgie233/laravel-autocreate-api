@@ -67,7 +67,8 @@ class AutoApiCommand extends Command
         $this->createController();//创建控制器 代办(图片等)
         $this->createRequest();//设置验证器 √
         $this->createRoute(); //路由植入 √
-        $this->createViews();//创建视图  代办
+        $this->createForeEndApiJs();//创建前端接口js √
+        $this->createViews();//创建视图  待完善
         $this->info('success');
 
         //---
@@ -111,14 +112,58 @@ class AutoApiCommand extends Command
         }
     }
 
+    //创建前端js
+    protected function createForeEndApiJs()
+    {
+        $vue_service_path = base_path('vue-cli/src/services');//vue页面路径
+        if (!is_dir($vue_service_path)) return $this->info('vue-cli Service path non existent');//没有vue项目service目录
+
+        //为api.js插入链接变量
+        $api_path_val = strtoupper($this->vars['MODULE'] . '_' . $this->vars['MODEL']) . '_PATH';
+        $api_relation_val = strtoupper($this->vars['MODULE'] . '_' . $this->vars['MODEL']) . '_RELATION_DATA';
+        $arr[$api_path_val] = "`\${BASE_URL}/" . $this->vars['SMODULE'] . '/' . $this->vars['SMODEL'] . '`';
+        $arr[$api_relation_val] = "`\${BASE_URL}/" . $this->vars['SMODULE'] . '/' . $this->vars['SMODEL'] . '_relation_data`';
+        $api_url = base_path('vue-cli/src/services/api.js');
+        $content = file_get_contents($api_url);
+        $keys = '';
+        foreach ($arr as $key => $item) {
+            $keys .= $key.',';
+            if (!stristr($content, $key)) {
+                $index = strrpos($content, '}');
+                $content = substr($content, 0, $index);
+                $content .= <<<str
+    {$key}: $item,
+
+str;
+                $content .= "}";
+            }
+        }
+        $keys =  substr($keys, 0, strrpos($keys, ','));
+        file_put_contents($api_url, $content);
+
+        //插入js文件(模型)
+        $url = base_path('vue-cli/src/services/' . $this->vars['SMODULE'] . '/' . $this->vars['SMODEL'] . '.js');
+        if (!is_dir($url)) {//不存在js才生成插入
+            touch($url, 0755, true);
+            $this->setVar('IMPORT',$keys);
+            $this->setVar('API_PATH',$api_path_val);
+            $this->setVar('API_RELATION',$api_relation_val);
+            $content = $this->replaceVars(__DIR__.'/../Build/JavaScript/model_js.tpl');
+            file_put_contents($url,$content);
+        }
+    }
+
     //创建视图
-    protected function createViews(){
+    protected function createViews()
+    {
         $vue_page_path = base_path('vue-cli/src/pages');//vue页面路径
-        $vue_page_module = base_path('vue-cli/src/pages/'.$this->vars['SMODULE']);//vue页面模块文件夹路径
-        if (!is_dir($vue_page_path))return $this->info('vue-cli Page path non existent');
-        is_dir($vue_page_module) or  mkdir($vue_page_module, 0755, true);
+        $vue_page_module = base_path('vue-cli/src/pages/' . $this->vars['SMODULE']);//vue页面模块文件夹路径
+        if (!is_dir($vue_page_path)) return $this->info('vue-cli Page path non existent');//没有vue项目页面目录
+        is_dir($vue_page_module) or mkdir($vue_page_module, 0755, true);
+        $this->page_root = $vue_page_module;
         $this->createIndexVue();//创建列表页面
     }
+
     protected function createViewsBak()
     {
         $dir = $this->vars['VIEW_PATH'];
@@ -141,13 +186,13 @@ class AutoApiCommand extends Command
                 //已存在组
                 $row = "Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');";
                 $row .= "\nRoute::get('{$this->vars['SMODEL']}_relation_data', '{$this->vars['MODEL']}Controller@relationData');";
-                if (stristr($route, $row))return;
-                else{
+                if (stristr($route, $row)) return;
+                else {
                     $index = strpos($route, $header);
-                    $index = strpos($route, 'function',$index);
-                    $index = strpos($route, '}',$index);
+                    $index = strpos($route, 'function', $index);
+                    $index = strpos($route, '}', $index);
                     $row .= "\n}";
-                    $route = substr_replace($route,$row,$index,1);
+                    $route = substr_replace($route, $row, $index, 1);
                     file_put_contents($file, $route);
                     $this->info('route create successfully');
                 }
@@ -224,10 +269,10 @@ str;
         }
 
         $str = "";
-        $this->setVar("STOREINSERT", $str);//代办
+        $this->setVar("STOREINSERT", $this->get_store_insert());//代办(图片上传)
         $this->setVar("UPDATEINSERT", $str);//代办
         $this->setVar("DELETEINSERT", $str);//代办
-        $this->setVar('RELATIONINSERT',$this->relation_str());//关联数据查询
+        $this->setVar('RELATIONINSERT', $this->relation_str());//关联数据查询
 
 
         $content = $this->replaceVars(__DIR__ . '/../Build/controller.tpl');
@@ -357,14 +402,39 @@ str;
             file_put_contents($modelFileUrl, $content);
         }
     }
-    protected function relation_str(){
+
+    protected function relation_str()
+    {
         $columns = $this->formatColumns();
         $str = "";
         foreach ($columns as $column) {
             if (isset($column['options']) && count($column['options']) > 2) {
-                if ($column['options'][1] === 'select'){//选择框关联
-                    $model = $column['options'][2]['select']['model'].'';
+                if ($column['options'][1] === 'select') {//选择框关联
+                    $model = $column['options'][2]['select']['model'] . '';
                     $str .= "case '{$model}': \$arr = ['*'];break;";
+                }
+            }
+        }
+        return $str;
+    }
+
+    protected function get_store_insert()
+    {
+        $str = $this->relation_store_insert();
+        return $str;
+    }
+
+    protected function relation_store_insert()
+    {
+        $columns = $this->formatColumns();
+        $str = "";
+        foreach ($columns as $column) {
+            if (isset($column['options']) && count($column['options']) > 2) {
+                if ($column['options'][1] === 'user') {//选择框关联
+                    $model = $column['name'] . '';
+                    $str .= <<<str
+\$data['{$model}'] = \$request->attributes->get('user')['id'];\n
+str;
                 }
             }
         }
