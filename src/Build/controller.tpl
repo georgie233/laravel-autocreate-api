@@ -50,6 +50,17 @@ class {CONTROLLE_NAME} extends BaseApiController
         return ResponseHelper::successMsg('删除成功');
     }
 
+    //获取相关关联数据 /{SMODULE}/{SMODEL}_relation_data
+    public function relationData(Request $request, {MODEL} ${SMODEL})
+    {
+        $fun = $request->relation . 'Class';
+        switch ($request->relation) {
+            {RELATIONINSERT}
+            default:  $arr = ['*'];
+        }
+
+        return ResponseHelper::successData(${SMODEL}->$fun()->get($arr)->toArray());
+    }
 
     //作废添加页面 GET: /{SMODULE}/{SMODEL}/create
     public function create(){return ResponseHelper::errorMsg('', 404);}

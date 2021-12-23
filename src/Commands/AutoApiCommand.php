@@ -216,7 +216,6 @@ str;
     public function createController()
     {
         $file = $this->getVar('CONTROLLER_PATH') . $this->model . 'Controller.php';
-
         if (is_file($file)) {
             //控制器已存在
             return false;
@@ -226,6 +225,7 @@ str;
         $this->setVar("STOREINSERT", $str);//代办
         $this->setVar("UPDATEINSERT", $str);//代办
         $this->setVar("DELETEINSERT", $str);//代办
+        $this->setVar('RELATIONINSERT',$this->relation_str());//关联数据查询
 
 
         $content = $this->replaceVars(__DIR__ . '/../Build/controller.tpl');
@@ -354,5 +354,18 @@ str;
 str;
             file_put_contents($modelFileUrl, $content);
         }
+    }
+    protected function relation_str(){
+        $columns = $this->formatColumns();
+        $str = "";
+        foreach ($columns as $column) {
+            if (isset($column['options']) && count($column['options']) > 2) {
+                if ($column['options'][1] === 'select'){//选择框关联
+                    $model = $column['options'][2]['select']['model'].'';
+                    $str .= "case '{$model}': \$arr = ['*'];break;";
+                }
+            }
+        }
+        return $str;
     }
 }
