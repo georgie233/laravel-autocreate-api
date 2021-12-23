@@ -59,6 +59,7 @@ class {CONTROLLE_NAME} extends BaseApiController
             default:  $arr = ['*'];
         }
 
+        if (!method_exists(${SMODEL},$fun)) return ResponseHelper::errorMsg('参数错误', 400);
         return ResponseHelper::successData(${SMODEL}->$fun()->get($arr)->toArray());
     }
 
