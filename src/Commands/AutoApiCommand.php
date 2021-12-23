@@ -64,7 +64,7 @@ class AutoApiCommand extends Command
         $this->setModelInstance();
         $this->setModelFillable();//设置fillable √
         $this->setModelRelation();//设置模型关联 √
-        $this->createController();//创建控制器 代办
+        $this->createController();//创建控制器 代办(图片等)
         $this->createRequest();//设置验证器 √
         $this->createRoute(); //路由植入 √
         $this->createViews();//创建视图  代办
