@@ -140,6 +140,7 @@ class AutoApiCommand extends Command
             if (stristr($route, $header)) {
                 //已存在组
                 $row = "Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');";
+                $row .= "\nRoute::get('{$this->vars['SMODEL']}_relation_data', '{$this->vars['MODEL']}Controller@relationData');";
                 if (stristr($route, $row))return;
                 else{
                     $index = strpos($route, $header);
@@ -156,9 +157,10 @@ class AutoApiCommand extends Command
                 $route .= <<<str
 \n
 //{$this->vars['MODULE']} Module
-Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
+Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}Controllers"],
 function () {
     Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
+    Route::get('{$this->vars['SMODEL']}_relation_data', '{$this->vars['MODEL']}Controller@relationData');
 });
 str;
                 file_put_contents($file, $route);
@@ -172,45 +174,45 @@ str;
     }
 
 
-    protected function createRouteBak()
-    {
-        if ($this->module) {
-            $file = $this->getVar('MODULE_PATH') . '/Http/routes.php';
-        } else {
-            $file = 'routes/web.php';
-        }
-        $route = file_get_contents($file);
-        //检测路由
-        if (strstr($route, "{$this->vars['SMODEL']}-route")) {
-            return;
-        }
-        if ($this->module) {
-            $route .= <<<str
-\n
-//{$this->vars['SMODEL']}-route
-Route::group(['middleware' => ['web'],'prefix'=>'{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
-function () {
-    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
-});
-str;
-            $route .= <<<str
-\n \n
-//{$this->vars['SMODEL']}-route-api
-Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
-function () {
-    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
-});
-str;
-        } else {
-            $route .= <<<str
-\n
-//{$this->vars['SMODEL']}-route
-Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
-str;
-        }
-        file_put_contents($file, $route);
-        $this->info('route create successfully');
-    }
+//    protected function createRouteBak()
+//    {
+//        if ($this->module) {
+//            $file = $this->getVar('MODULE_PATH') . '/Http/routes.php';
+//        } else {
+//            $file = 'routes/web.php';
+//        }
+//        $route = file_get_contents($file);
+//        //检测路由
+//        if (strstr($route, "{$this->vars['SMODEL']}-route")) {
+//            return;
+//        }
+//        if ($this->module) {
+//            $route .= <<<str
+//\n
+////{$this->vars['SMODEL']}-route
+//Route::group(['middleware' => ['web'],'prefix'=>'{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
+//function () {
+//    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
+//});
+//str;
+//            $route .= <<<str
+//\n \n
+////{$this->vars['SMODEL']}-route-api
+//Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
+//function () {
+//    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
+//});
+//str;
+//        } else {
+//            $route .= <<<str
+//\n
+////{$this->vars['SMODEL']}-route
+//Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
+//str;
+//        }
+//        file_put_contents($file, $route);
+//        $this->info('route create successfully');
+//    }
 
     //创建控制器
     public function createController()
