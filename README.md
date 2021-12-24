@@ -191,7 +191,7 @@ public function handle($request, Closure $next)
 }
 ```
 
-##### 前端下拉框select选项显示空白
+##### 前端下拉框选项显示空白
 ```
 // 需在后端相关控制器的relationData 配置查询
 case 'category': $arr = ['*']; break;
