@@ -7,6 +7,10 @@
             {{ item[Object.keys(item)[1]] }}
         </a-select-option>
     </a-select>
+    <div v-if="!(selectData['{OBJMODEL}'] && selectData['{OBJMODEL}'].length)">
+        无数据
+        <a-input  v-decorator="['{COLUMN['name']}', {rules: [{ required: true, message: '请选择'}]}]" hidden></a-input>
+    </div>
     <div v-if="!selectData['{OBJMODEL}']">
         <a-button type="danger" shape="round" loading v-if="selectData['{OBJMODEL}']===null" />
         <a-button type="danger" @click="init_{OBJMODEL}" v-if="selectData['{OBJMODEL}']===false">重新加载数据</a-button>

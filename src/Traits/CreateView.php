@@ -135,7 +135,7 @@ str;
                         $this->setVar('FORM_HTML', $html);
                     } else if ($type == 'select') {
                         $model = $column['options'][2]['select']['model'];
-                        $this->info('OBJMODEL',$model);
+                        $this->setVar('OBJMODEL',$model);
                         $select_data_str .= "{$model}:false,";//植入初始值
                         $init_data_str .= "this.init_{$model}();\n";//植入initData()里面
                         $init_data_fun_str .= <<<str
