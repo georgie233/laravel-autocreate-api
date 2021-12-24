@@ -144,6 +144,8 @@ str;
         //插入js文件(模型)
         $url = base_path('vue-cli/src/services/' . $this->vars['SMODULE'] . '/' . $this->vars['SMODEL'] . '.js');
         if (!is_dir($url)) {//不存在js才生成插入
+            $temp_url =  base_path('vue-cli/src/services/' . $this->vars['SMODULE']);
+            is_dir($temp_url) or mkdir($temp_url);
             touch($url, 0755, true);
             $this->setVar('IMPORT',$keys);
             $this->setVar('API_PATH',$api_path_val);
