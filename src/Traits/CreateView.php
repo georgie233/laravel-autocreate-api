@@ -28,8 +28,8 @@ trait CreateView
         if (stristr($content, $module_str)) {
             //已存在模块 插入子路由
             $index = stripos($content, $module_str);
-            $index = stripos($content,'children',$index);
-            $index = stripos($content,'[',$index);
+            $index = stripos($content, 'children', $index);
+            $index = stripos($content, '[', $index);
             $str = <<<str
 
                     {
@@ -40,17 +40,17 @@ trait CreateView
                     },
 
 str;
-            $content = substr($content,0,$index+1) . $str . substr($content,$index+1);
-            file_put_contents($config_file,$content);
+            $content = substr($content, 0, $index + 1) . $str . substr($content, $index + 1);
+            file_put_contents($config_file, $content);
 //            $this->info($content);
         } else {
             //不存在模块  插入模块路由
             $routeJson = $this->replaceVars(__DIR__ . '/../Build/router_config.tpl');
             $index = stripos($content, 'rootModules');
-            $index = stripos($content, '[',$index);
-            $content = substr($content,0,$index+1) . $routeJson . substr($content,$index+1);
+            $index = stripos($content, '[', $index);
+            $content = substr($content, 0, $index + 1) . $routeJson . substr($content, $index + 1);
             $this->info($content);
-            file_put_contents($config_file,$content);
+            file_put_contents($config_file, $content);
             $this->createIndexVueRoute();//重新调用插入子路由
 
         }
@@ -68,7 +68,7 @@ str;
         $select_str = "{title: '编号', dataIndex: 'search_id', value: '', condition: '='},";
         $columns_str = "{title: '编号', dataIndex: 'id'},";
         foreach ($columns as $column) {
-            $check = $column && in_array($column['name'], $this->modelInstance->getFillAble());
+            $check = $column;
             if ($check && count($column['options']) <= 2) {//排除关联字段
                 if (in_array($column['options'][1], $arr)) {//属于允许搜索的字段
                     $select_str .= "\n\t\t{title: '{$column['options'][0]}', dataIndex: 'search_{$column['name']}', value: '', condition: 'like'},";
@@ -111,7 +111,7 @@ str;
         $init_data_str = '';//initData()里面
         $init_data_fun_str = '';//方法
         foreach ($this->formatColumns() as $column) {
-            if (isset($column['options']) && count($column['options']) >= 2){
+            if (isset($column['options']) && count($column['options']) >= 2) {
                 $this->setVar("COLUMN['title']", $column['options'][0]);
                 $this->setVar("COLUMN['name']", $column['name']);
             }
@@ -135,7 +135,7 @@ str;
                         $this->setVar('FORM_HTML', $html);
                     } else if ($type == 'select') {
                         $model = $column['options'][2]['select']['model'];
-                        $this->setVar('OBJMODEL',$model);
+                        $this->setVar('OBJMODEL', $model);
                         $select_data_str .= "{$model}:false,";//植入初始值
                         $init_data_str .= "this.init_{$model}();\n";//植入initData()里面
                         $init_data_fun_str .= <<<str
@@ -167,16 +167,3 @@ str;
         $this->setVar('FORMROWS', $COLUMNS);//表单
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
