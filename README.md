@@ -87,6 +87,10 @@ composer dumpautoload -o
 php artisan auto:init
 php artisan auto:auth
 
+composer dump-autoloa
+
+//记得配置 .env 文件  （配置数据库链接地址）
+//如果mysql版本低于5.7 请前往配置AppServiceProvider文件  （参考 " 其他 > mysql版本太低执行迁移报错 "）
 php artisan migrate --seed
 ```
 
