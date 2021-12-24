@@ -269,7 +269,8 @@ str;
         $file = $this->getVar('CONTROLLER_PATH') . $this->model . 'Controller.php';
         if (is_file($file)) {
             //控制器已存在
-            return false;
+            if(!stristr($content,'Display a listing of the resource'))
+                return false;
         }
 
         $str = "";
