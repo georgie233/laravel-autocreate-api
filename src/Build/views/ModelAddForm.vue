@@ -19,6 +19,7 @@ export default {
     },
     methods: {
         initData() {
+            {SMODEL}RelationData();//请删除这段代码
             {INITDATA}
         },
         {METHODS}
