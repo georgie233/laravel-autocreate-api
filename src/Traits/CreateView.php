@@ -111,8 +111,10 @@ str;
         $init_data_str = '';//initData()里面
         $init_data_fun_str = '';//方法
         foreach ($this->formatColumns() as $column) {
-            $this->setVar("COLUMN['title']", $column['options'][0]);
-            $this->setVar("COLUMN['name']", $column['name']);
+            if (isset($column['options']) && count($column['options']) >= 2){
+                $this->setVar("COLUMN['title']", $column['options'][0]);
+                $this->setVar("COLUMN['name']", $column['name']);
+            }
             if (isset($column['options']) && count($column['options']) === 2) {
                 //添加字段
                 $type = $column['options'][1];//字段类型
