@@ -1,5 +1,7 @@
 ## laravel自动化构建
 
+ **温馨提示：如在开发过程出现了一些问题，请第一时间前往 "其他" 里寻找是否有相关的问题解决方案** 
+
 ### 关于
 
 #### 环境要求
@@ -187,6 +189,15 @@ public function handle($request, Closure $next)
     header("Access-Control-Expose-Headers: *");
     return $next($request);
 }
+```
+
+##### 前端下拉框select选项显示空白
+```
+// 需在后端相关控制器的relationData 配置查询
+case 'category': $arr = ['*']; break;
+//更改为
+case 'category': $arr = ['id','name','created_at']; break;
+//数组第一个是 关联字段   第二个是前端下拉框选项显示的内容
 ```
 
 ##### 目录结构
