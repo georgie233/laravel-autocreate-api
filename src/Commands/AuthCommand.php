@@ -64,6 +64,9 @@ Route::group(['prefix' => 'admin'], function () {
 });
 str;
         $content = str_replace($str, $str2, $content);
+        if(!stristr($content,'login')){
+            $content .= $str2;
+        }
         file_put_contents($url, $content);
 
 
