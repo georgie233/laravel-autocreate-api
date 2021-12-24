@@ -42,7 +42,7 @@ trait CreateView
 str;
             $content = substr($content,0,$index+1) . $str . substr($content,$index+1);
             file_put_contents($config_file,$content);
-            $this->info($content);
+            //$this->info($content);
         } else {
             //不存在模块  插入模块路由
             $routeJson = $this->replaceVars(__DIR__ . '/../Build/router_config.tpl');
