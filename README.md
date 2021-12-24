@@ -154,6 +154,10 @@ php artisan auto:api Category Book 分类
 php artisan auto:api Book Book 书籍
 ```
 
+> 注意：如果使用到了多表关联，需给后端配置查询字段
+> 参考 " 其他 >  前端下拉框选项显示空白"
+
+
 ### 其他
 
 ##### mysql版本太低执行迁移报错
