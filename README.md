@@ -138,6 +138,11 @@ Schema::create('categories', function (Blueprint $table) {
 #### 执行自动化构建
 
 > 参考 " 其他 > 目录结构 "  请确保vue-cli路径存在
+> 温馨提示：一定要在生成相关表后再执行自动化构建
+
+```
+php artisan migrate
+```
 
 ```
 php artisan auto:api Category Book 分类
