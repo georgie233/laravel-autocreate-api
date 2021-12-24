@@ -111,12 +111,12 @@ str;
         $init_data_str = '';//initData()里面
         $init_data_fun_str = '';//方法
         foreach ($this->formatColumns() as $column) {
+            $this->setVar("COLUMN['title']", $column['options'][0]);
+            $this->setVar("COLUMN['name']", $column['name']);
             if (isset($column['options']) && count($column['options']) === 2) {
                 //添加字段
                 $type = $column['options'][1];//字段类型
                 $url = __DIR__ . '/../Build/forms/' . $type . '.tpl';
-                $this->setVar("COLUMN['title']", $column['options'][0]);
-                $this->setVar("COLUMN['name']", $column['name']);
                 $content = $this->replaceVars($url);//读取模板
                 $COLUMNS .= "\n" . $content;
             } else if (isset($column['options']) && count($column['options']) > 2) {//处理关联关系
@@ -133,6 +133,7 @@ str;
                         $this->setVar('FORM_HTML', $html);
                     } else if ($type == 'select') {
                         $model = $column['options'][2]['select']['model'];
+                        $this->info('OBJMODEL',$model);
                         $select_data_str .= "{$model}:false,";//植入初始值
                         $init_data_str .= "this.init_{$model}();\n";//植入initData()里面
                         $init_data_fun_str .= <<<str
