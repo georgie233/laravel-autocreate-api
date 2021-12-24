@@ -141,6 +141,7 @@ Schema::create('categories', function (Blueprint $table) {
 
 > 参考 " 其他 > 目录结构 "  请确保vue-cli路径存在
 > 温馨提示：一定要在生成相关表后再执行自动化构建
+> 如果已经在生成表之前执行了自动化构建 之后出现问题 请参考 " 其他 > 自动化构建后页面没有字段数据 "
 
 ```
 php artisan migrate
@@ -202,6 +203,17 @@ case 'category': $arr = ['*']; break;
 //更改为
 case 'category': $arr = ['id','name','created_at']; break;
 //数组第一个是 关联字段   第二个是前端下拉框选项显示的内容
+```
+
+##### 自动化构建后页面没有字段数据
+```
+清空 相关模型 $fillable 的值
+删除 已经自动化构建的前端页面  ({model}List,{model}Add,{model}AddForm)
+删除 vue-cli/src/router/config.js  相关页面注册
+确保相关模型 的相关数据库迁移已经执行存在数据库
+确保相关数据迁移的comment注释书写没有问题
+
+重新执行自动化构建√
 ```
 
 ##### 目录结构
