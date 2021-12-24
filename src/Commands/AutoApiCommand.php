@@ -158,12 +158,14 @@ str;
     {
         $vue_page_path = base_path('vue-cli/src/pages');//vue页面路径
         $vue_page_module = base_path('vue-cli/src/pages/' . $this->vars['SMODULE']);//vue页面模块文件夹路径
-        if (!is_dir($vue_page_path)) return $this->info('vue-cli Page path non existent');//没有vue项目页面目录
+        if (!is_dir($vue_page_path)) return $this->error('vue-cli Page path non existent');//没有vue项目页面目录
         is_dir($vue_page_module) or mkdir($vue_page_module, 0755, true);
         $this->page_root = $vue_page_module;
-        $this->createIndexVue();//创建列表页面
+        $this->createIndexVue();//创建前端列表页面
+        $this->createIndexVueRoute();//创建前端列表页面的路由
     }
 
+    //废弃保留
     protected function createViewsBak()
     {
         $dir = $this->vars['VIEW_PATH'];

@@ -75,13 +75,13 @@
 import {mapState} from 'vuex'
 import TimeRangeSelection from "../../components/georgie/TimeRangeSelection";
 import StandardTable from "../../components/table/StandardTable";
-import {{SMODEL}Destroy, {SMODEL}List} from "../../services/{{SMODULE}}/{SMODEL}";
+import {{SMODEL}Destroy, {SMODEL}List} from "../../services/{SMODULE}/{SMODEL}";
 import {MODEL}Add from "./{MODEL}Add";
 
 export default {
     name: 'Demo',
     components: {{MODEL}Add, StandardTable, TimeRangeSelection},
-    i18n: require('./i18n'),
+    // i18n: require('./i18n'),
     data() {
         return {
             range_time: '',
@@ -193,5 +193,5 @@ export default {
 </script>
 
 <style scoped lang="less">
-@import "index";
+//@import "index";
 </style>

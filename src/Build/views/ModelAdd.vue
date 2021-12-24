@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import DemoAddForm from "./Form/{MODEL}AddForm";
+import {MODEL}AddForm from "./Form/{MODEL}AddForm";
 export default {
     name: "{MODEL}Add",
     components: {{MODEL}AddForm},
