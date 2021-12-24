@@ -213,6 +213,9 @@ public function handle($request, Closure $next)
     return $next($request);
 }
 ```
+```
+前端请避免用127.0.0.1 或者 localhost 打开（可能会导致跨域）
+```
 
 ##### 前端下拉框选项显示空白
 ```
