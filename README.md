@@ -17,8 +17,8 @@ laravel低代码开发包 (完善中，慎用)
 
 ### 链接网站
 
-* [Georgie/laravel-api-autocreate (gitee.com)](https://gitee.com/georgie233/laravel-autocreate-api)
-* [Georgie/vue-admin (gitee.com)](https://gitee.com/georgie233/vue-admin)
+* [Georgie/laravel-api-autocreate - gitee](https://gitee.com/georgie233/laravel-autocreate-api)
+* [Georgie/vue-admin - gitee](https://gitee.com/georgie233/vue-admin)
 * [Georgie/laravel-module - Packagist](https://packagist.org/packages/georgie/laravel-module)
 * [Georgie/laravel-api-autocreate- Packagist](https://packagist.org/packages/georgie/laravel-api-autocreate)
 
