@@ -65,6 +65,9 @@ composer require georgie/laravel-module 1.0
 使用laravel8 请使用：
 composer require georgie/laravel-module 2.0
 
+```
+```
+
 composer require georgie/laravel-api-autocreate
     
 //vue依赖
