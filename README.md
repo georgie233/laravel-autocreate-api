@@ -41,10 +41,6 @@ composer 2.1.11
 ```
 composer create-project laravel/laravel=5.7.* --prefer-dist {porjectName}
 ```
-#### 也可以选择安装laravel8.6框架
-```
-composer create-project laravel/laravel=8.6.* --prefer-dist {porjectName}
-```
 
 
 打开项目目录 创建vue项目
