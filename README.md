@@ -41,10 +41,6 @@ composer 2.1.11
 ```
 composer create-project laravel/laravel=5.7.* --prefer-dist {porjectName}
 ```
-#### 也可以安装laravel8.6框架
-```
-composer create-project laravel/laravel=8.6.* --prefer-dist {porjectName}
-```
 
 
 打开项目目录 创建vue项目
@@ -61,9 +57,6 @@ git clone -b master https://gitee.com/georgie233/vue-admin.git vue-cli
 
 使用laravel5 请使用：
 composer require georgie/laravel-module 1.0
-
-使用laravel8 请使用：
-composer require georgie/laravel-module 2.0
 
 ```
 ```
