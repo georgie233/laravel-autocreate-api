@@ -53,7 +53,13 @@ git clone -b master https://gitee.com/georgie233/vue-admin.git vue-cli
 
 ```php
 //laravel 依赖
-composer require georgie/laravel-module
+
+使用laravel5 请使用：
+composer require georgie/laravel-module 1.0
+
+使用laravel8 请使用：
+composer require georgie/laravel-module 2.0
+
 composer require georgie/laravel-api-autocreate
     
 //vue依赖
