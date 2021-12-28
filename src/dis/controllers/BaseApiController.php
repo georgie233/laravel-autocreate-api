@@ -24,6 +24,7 @@ class BaseApiController extends Controller
 
         $model = $this->handWhereArr($model, $requestData);//拼接条件
         $model = $this->handWithArr($model, $requestData);//拼接携带with
+        $model = $this->handOrder($model,$requestData);//拼接排序
 
         $count = $model->count();
         if (isset($requestData['start']) || isset($requestData['len']))
@@ -80,6 +81,18 @@ class BaseApiController extends Controller
             }
         }
 
+        return $m;
+    }
+    
+    protected function handOrder($model, $requestData){
+        $m = $model;
+        foreach ($requestData as $k => $i) {
+            if (stristr($k, 'order_')) {
+                $key = addslashes(str_replace('order_', '', $k));
+                $item = addslashes($i);
+                $m = $m->orderBy($key,$item);
+            }
+        }
         return $m;
     }
 
