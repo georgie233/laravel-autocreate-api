@@ -39,14 +39,14 @@ composer 2.1.11
 #### 安装laravel5.7框架
 
 ```
-composer create-project laravel/laravel=5.7.* --prefer-dist {porjectName}
+composer create-project laravel/laravel=5.7.* --prefer-dist {projectName}
 ```
 
 
 打开项目目录 创建vue项目
 
 ```
-cd {porjectName}
+cd {projectName}
 git clone -b master https://gitee.com/georgie233/vue-admin.git vue-cli
 ```
 
