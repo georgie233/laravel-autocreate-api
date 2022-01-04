@@ -267,10 +267,13 @@ str;
     public function createController()
     {
         $file = $this->getVar('CONTROLLER_PATH') . $this->model . 'Controller.php';
+        $content = file_get_contents($file);
         if (is_file($file)) {
             //控制器已存在
-            if(!stristr($content,'Display a listing of the resource'))
+            echo $file;
+            if(!stristr($content,'Display a listing of the resource')){
                 return false;
+            }
         }
 
         $str = "";
