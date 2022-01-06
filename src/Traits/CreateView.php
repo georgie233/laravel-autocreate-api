@@ -8,10 +8,19 @@ trait CreateView
 
     protected function createIndexVue()
     {
-        $this->setIndexVars();
+        $this->setIndexVars();//设置index所需参数
+        $this->createIndexJs();//创建index.js
         $this->createIndexSon();//创建index页面所需引入的子组件
         $content = $this->replaceVars(__DIR__ . '/../Build/views/List.vue');
         $file_path = $this->page_root . '/' . $this->vars['MODEL'] . 'List.vue';//列表组件
+        file_put_contents($file_path, $content);
+
+    }
+
+    //创建index.js
+    protected function createIndexJs(){
+        $file_path = $this->page_root . '/index.js';
+        $content = $this->replaceVars(__DIR__ . '/../Build/views/index.js');
         file_put_contents($file_path, $content);
     }
 
@@ -36,7 +45,7 @@ trait CreateView
                         path: '{$this->vars['SMODEL']}',
                         name: '{$this->title}列表',
                         model: '{$this->vars['SMODEL']}',
-                        component: () => import('@/pages/{$this->vars['SMODULE']}/{$this->vars['MODEL']}List'),
+                        component: () => import('@/pages/{$this->vars['SMODULE']}/{$this->vars['SMODEL']}'),
                     },
 
 str;
@@ -57,7 +66,7 @@ str;
     }
 
 
-    /*设置Index页面所需参数
+    /*设置Index.js 所需参数
      * SEARCH_ARR
      * COLUMNS_ARR
      */
@@ -71,12 +80,12 @@ str;
             $check = $column;
             if ($check && count($column['options']) <= 2) {//排除关联字段
                 if (in_array($column['options'][1], $arr)) {//属于允许搜索的字段
-                    $select_str .= "\n\t\t{title: '{$column['options'][0]}', dataIndex: 'search_{$column['name']}', value: '', condition: 'like'},";
-                    $columns_str .= "\n\t\t{title: '{$column['options'][0]}', dataIndex: '{$column['name']}'},";
+                    $select_str .= "\n\t{title: '{$column['options'][0]}', dataIndex: 'search_{$column['name']}', value: '', condition: 'like'},";
+                    $columns_str .= "\n\t{title: '{$column['options'][0]}', dataIndex: '{$column['name']}'},";
                 }
             }
         }
-        $columns_str .= "\n\t\t{title: '操作', scopedSlots: {customRender: 'action'}, hideLabel: true}";
+        $columns_str .= "\n\t{title: '操作', scopedSlots: {customRender: 'action'}, hideLabel: true}";
         $this->setVar('SEARCH_ARR', $select_str);//设置搜索数组
         $this->setVar('COLUMNS_ARR', $columns_str);//设置显示字段数组
     }

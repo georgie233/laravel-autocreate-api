@@ -24,6 +24,7 @@ return request(url, METHOD.DELETE);
 }
 
 export async function {SMODEL}RelationData(data){
+if(!data)return;
 const url = {API_RELATION} + `?relation=${data}`
 return request(url, METHOD.GET);
 }

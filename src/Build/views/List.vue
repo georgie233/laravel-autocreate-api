@@ -22,8 +22,8 @@
         </a-row>
         <a-row type="flex" justify="space-between">
             <a-col style="margin-top: 10px;">
-                <a-button type="primary" style="margin-right: 5px;" @click="$refs.DemoAdd.open()">新建</a-button>
-                <{MODEL}Add ref="DemoAdd"></{MODEL}Add>
+                <a-button type="primary" style="margin-right: 5px;" @click="$refs.{MODEL}Add.open()">新建</a-button>
+                <{MODEL}Add ref="{MODEL}Add" @addComplete="searchClick"></{MODEL}Add>
                 <a-dropdown>
                     <a-menu slot="overlay">
                         <a-menu-item @click="batchDeleteClick" key="delete">删除</a-menu-item>
@@ -73,13 +73,14 @@
 
 <script>
 import {mapState} from 'vuex'
-import TimeRangeSelection from "../../components/georgie/TimeRangeSelection";
-import StandardTable from "../../components/table/StandardTable";
-import {{SMODEL}Destroy, {SMODEL}List} from "../../services/{SMODULE}/{SMODEL}";
+import TimeRangeSelection from "@/components/georgie/TimeRangeSelection";
+import StandardTable from "@/components/table/StandardTable";
+import {{SMODEL}Destroy, {SMODEL}List} from "@/services/{SMODULE}/{SMODEL}";
 import {MODEL}Add from "./{MODEL}Add";
+import {search,columns,withArr} from './index.js'
 
 export default {
-    name: 'Demo',
+    name: '{MODEL}List',
     components: {{MODEL}Add, StandardTable, TimeRangeSelection},
     // i18n: require('./i18n'),
     data() {
@@ -93,15 +94,9 @@ export default {
                 current: 1,
                 total: 0
             },
-            search: [
-                {SEARCH_ARR}
-            ],
-            columns: [
-                {COLUMNS_ARR}
-            ],
-            withArr: [
-                // {key:'with_category',get:'name'}
-            ],
+            search: search,
+            columns: columns,
+            withArr: withArr,
             dataSource: [],
         }
     },

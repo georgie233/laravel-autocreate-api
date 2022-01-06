@@ -48,14 +48,14 @@ class AdminLoginController extends Controller
         return ResponseHelper::successData(['check' => true]);
     }
 
-    protected function getToken($request)
+    public function getToken($request)
     {
         $h = $request->header('Authorization');
         if (!$h) throw new \Exception('令牌不能为空', 401);
         return str_replace("Bearer ", "", $h);
     }
 
-    protected function getTokenModel($request)
+    public function getTokenModel($request)
     {
         $token = $this->getToken($request);
         $json = Crypt::decrypt($token);

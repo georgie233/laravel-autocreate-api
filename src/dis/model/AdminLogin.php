@@ -40,6 +40,12 @@ class AdminLogin extends Model
         return self::modeLogin($user);
     }
 
+    public static function logout($token){
+        $bool = AdminLogin::where('token',$token)->delete();
+        return $bool;
+    }
+
+
     protected static function getTimeWlcome()
     {
         $time = date('H');

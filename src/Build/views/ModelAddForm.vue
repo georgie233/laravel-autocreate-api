@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import {{SMODEL}RelationData} from "../../../services/{SMODULE}/{SMODEL}";
+import {{SMODEL}RelationData,{SMODEL}Created} from "@/services/{SMODULE}/{SMODEL}";
 
 export default {
     name: "{MODEL}AddForm",
@@ -26,7 +26,13 @@ export default {
         submit() {
             this.form.validateFields((err, values) => {
                 if (!err) {
-                    console.log('Received values of form: ', values)
+                    {SMODEL}Created(values).then(res=>{
+                        let data = res.status===200?res.data:[];
+                        if (!data)return this.$message.error('提交失败');
+                        if (data.code !== 200)return this.$message.error(data.message);
+                        this.$message.success(data.message??'添加成功');
+                        this.$emit('addComplete',values);
+                    });
                 }
             })
         }

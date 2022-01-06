@@ -162,7 +162,10 @@ str;
         $vue_page_module = base_path('vue-cli/src/pages/' . $this->vars['SMODULE']);//vue页面模块文件夹路径
         if (!is_dir($vue_page_path)) return $this->error('vue-cli Page path non existent');//没有vue项目页面目录
         is_dir($vue_page_module) or mkdir($vue_page_module, 0755, true);
-        $this->page_root = $vue_page_module;
+        $vue_page_module_model = $vue_page_module .'/' . $this->vars['SMODEL'];//vue页面模型路径
+        is_dir($vue_page_module_model) or mkdir($vue_page_module_model, 0755, true);
+        $this->page_root = $vue_page_module_model;
+        
         $this->createIndexVue();//创建前端列表页面
         $this->createIndexVueRoute();//创建前端列表页面的路由
     }
@@ -206,7 +209,7 @@ str;
                 $route .= <<<str
 \n
 //{$this->vars['MODULE']} Module
-Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}Controllers"],
+Route::group(['middleware' => ['api','admin_auth'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}Controllers"],
 function () {
     Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
     Route::get('{$this->vars['SMODEL']}_relation_data', '{$this->vars['MODEL']}Controller@relationData');

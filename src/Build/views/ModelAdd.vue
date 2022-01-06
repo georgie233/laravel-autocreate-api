@@ -1,7 +1,7 @@
 <template>
     <span>
         <a-modal :width="900" v-model="visible" title="添加" ok-text="提交" cancel-text="取消" @ok="okFun">
-            <{MODEL}AddForm ref="form"></{MODEL}AddForm>
+            <{MODEL}AddForm ref="form"  @addComplete="addComplete"></{MODEL}AddForm>
         </a-modal>
     </span>
 </template>
@@ -17,6 +17,10 @@ export default {
         };
     },
     methods: {
+        addComplete(values){
+            this.visible = false;
+            this.$emit('addComplete',values);
+        },
         okFun() {
             this.$refs.form.submit();
         },
