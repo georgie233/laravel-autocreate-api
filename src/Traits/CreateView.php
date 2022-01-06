@@ -92,12 +92,12 @@ str;
 
     protected function createIndexSon()
     {
+        //添加部分
         $content = $this->replaceVars(__DIR__ . '/../Build/views/ModelAdd.vue');//子组件：添加的模态框
         $file_path = $this->page_root . '/' . $this->vars['MODEL'] . 'Add.vue';
-        if (!is_dir($file_path)) {//没有这个文件才会植入
+        if (!is_dir($file_path)) {//没有这个文件才会生成
             file_put_contents($file_path, $content);
         }
-
 
         $this->setFormRow();//设置表单row
         $form_path = $this->page_root . '/' . "Form";
@@ -105,6 +105,21 @@ str;
         $file_path = $this->page_root . '/Form/' . $this->vars['MODEL'] . 'AddForm.vue';//子组件：添加的表单
         if (!is_dir($file_path)) {//没有这个文件才会植入
             $content = $this->replaceVars(__DIR__ . '/../Build/views/ModelAddForm.vue');//子组件：表单
+            file_put_contents($file_path, $content);
+        }
+
+        //修改部分
+        $content = $this->replaceVars(__DIR__ . '/../Build/views/ModelEdit.vue');//子组件：修改的模态框
+        $file_path = $this->page_root . '/' . $this->vars['MODEL'] . 'Edit.vue';
+        if (!is_dir($file_path)) {//没有这个文件才会生成
+            file_put_contents($file_path, $content);
+        }
+
+        $form_path = $this->page_root . '/' . "Form";
+        is_dir($form_path) or mkdir($form_path);
+        $file_path = $this->page_root . '/Form/' . $this->vars['MODEL'] . 'EditForm.vue';//子组件：添加的表单
+        if (!is_dir($file_path)) {//没有这个文件才会植入
+            $content = $this->replaceVars(__DIR__ . '/../Build/views/ModelEditForm.vue');//子组件：表单
             file_put_contents($file_path, $content);
         }
     }

@@ -15,7 +15,9 @@ return request(url, METHOD.GET);
 }
 
 export async function {SMODEL}Update(data) {
-return request({API_PATH}, METHOD.PUT, data);
+const url = {API_PATH} + '/' + data['id'];
+delete data['id'];
+return request(url, METHOD.PUT, data);
 }
 
 export async function {SMODEL}Destroy(data) {

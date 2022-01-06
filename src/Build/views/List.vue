@@ -58,7 +58,7 @@
                 {{ record.name }}
             </div>
             <div slot="action" slot-scope="{record}">
-                <a style="margin-right: 8px">
+                <a style="margin-right: 8px" @click="$refs.{MODEL}Edit.open(record.id)">
                     <a-icon type="edit"/>
                     编辑
                 </a>
@@ -68,6 +68,9 @@
                 </a>
             </div>
         </standard-table>
+
+        
+        <{MODEL}Edit ref="{MODEL}Edit" @editComplete="searchClick"></{MODEL}Edit>
     </a-card>
 </template>
 
@@ -77,11 +80,12 @@ import TimeRangeSelection from "@/components/georgie/TimeRangeSelection";
 import StandardTable from "@/components/table/StandardTable";
 import {{SMODEL}Destroy, {SMODEL}List} from "@/services/{SMODULE}/{SMODEL}";
 import {MODEL}Add from "./{MODEL}Add";
+import {MODEL}Edit from "./{MODEL}Edit";
 import {search,columns,withArr} from './index.js'
 
 export default {
     name: '{MODEL}List',
-    components: {{MODEL}Add, StandardTable, TimeRangeSelection},
+    components: {{MODEL}Add, {MODEL}Edit, StandardTable, TimeRangeSelection},
     // i18n: require('./i18n'),
     data() {
         return {
