@@ -47,22 +47,21 @@ composer create-project laravel/laravel=5.7.* --prefer-dist {projectName}
 
 ```
 cd {projectName}
+```
+```
 git clone -b master https://gitee.com/georgie233/vue-admin.git vue-cli
 ```
 
 #### 安装依赖
 
-```php
-//laravel 依赖
-
 使用laravel5 请使用：
+```
 composer require georgie/laravel-module 1.0
-
 ```
 ```
-
 composer require georgie/laravel-api-autocreate
-    
+```
+```
 //vue依赖
 cd vue-cli
 npm i
@@ -72,9 +71,11 @@ npm i
 
 ```
 php artisan vendor:publish --provider="Nwidart\Modules\LaravelModulesServiceProvider"
-
+```
+```
 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="config"
-
+```
+```
 php artisan vendor:publish --provider="Georgie\Module\LaravelServiceProvider"
 ```
 
@@ -86,16 +87,21 @@ php artisan auto:init
 
 ```
 php artisan g:module Api
-
+```
+```
 composer dumpautoload -o
 ```
 
 ```
 php artisan auto:init
+```
+```
 php artisan auto:auth
-
+```
+```
 composer dump-autoloa
-
+```
+```
 //记得配置 .env 文件  （配置数据库链接地址）
 //如果mysql版本低于5.7 请前往配置AppServiceProvider文件  （参考 " 其他 > mysql版本太低执行迁移报错 "）
 
