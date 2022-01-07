@@ -137,7 +137,7 @@ php artisan g:module Book
 > 创建书籍模型
 
 ```
-artisan g:model Book Book
+php artisan g:model Book Book
 ```
 
 > 创建书籍分类模型
