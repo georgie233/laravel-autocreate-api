@@ -58,7 +58,8 @@ str;
             $index = stripos($content, 'rootModules');
             $index = stripos($content, '[', $index);
             $content = substr($content, 0, $index + 1) . $routeJson . substr($content, $index + 1);
-            $this->info($content);
+            // $this->info($content);
+            $this->info('route module group insert complete');
             file_put_contents($config_file, $content);
             $this->createIndexVueRoute();//重新调用插入子路由
 
@@ -138,6 +139,8 @@ str;
             if (isset($column['options']) && count($column['options']) >= 2) {
                 $this->setVar("COLUMN['title']", $column['options'][0]);
                 $this->setVar("COLUMN['name']", $column['name']);
+                $this->setVar("COLUMN['type']",$column['type']);
+                $this->setVar("COLUMN['formatType']",$column['formatType']);
             }
             if (isset($column['options']) && count($column['options']) === 2) {
                 //添加字段

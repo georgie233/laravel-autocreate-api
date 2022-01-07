@@ -102,6 +102,8 @@ trait Db
             if (count($options) >= 2) {
                 $info['title'] = $options[0];
                 $info['name'] = $column->getName();
+                $info['type'] = $column->getType()->getName();
+                $info['formatType'] = $this->formatType($column->getType()->getName());
                 $info['nonull'] = $column->getNotNull();
                 $info['default'] = $column->getDefault();
                 $info['options'] = $this->formatFieldOptions($options);
@@ -109,6 +111,13 @@ trait Db
         }
 
         return $info;
+    }
+
+    protected function formatType($type){
+        $str = 'string';
+        $numberArr = ['integer','bigint','smallint','float','double'];
+        if(in_array($type,$numberArr))return 'number';
+        return $str;
     }
 
     protected function formatFieldOptions($options)

@@ -22,6 +22,7 @@ export default {
     methods: {
         editComplete(values){
             this.visible = false;
+            this.data = null;
             this.$emit('editComplete',values);
         },
         okFun() {
