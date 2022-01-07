@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-form :form="form" class="form" v-bind="{labelCol: { span: 4 },wrapperCol: { span: 20 }}">
-            
+            {FORMROWS}
         </a-form>
     </div>
 </template>
@@ -11,7 +11,7 @@ import {{SMODEL}RelationData,{SMODEL}Update} from "@/services/{SMODULE}/{SMODEL}
 
 export default {
     name: "{MODEL}AddForm",
-    props:['id'],
+    props:['id','data'],
     data() {
         return {
             form: this.$form.createForm(this),
@@ -21,11 +21,6 @@ export default {
     methods: {
         initData() {
             {SMODEL}RelationData();//请删除这段代码
-            {SMODEL}Update.then(res=>{
-                let data = res.status===200?res.data:[];
-                if(!data || data.code !== 200)return this.$message.error('初始化数据失败');
-                console.log(data.data);
-            });
             {INITDATA}
         },
         {METHODS}

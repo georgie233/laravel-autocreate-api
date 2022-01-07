@@ -11,6 +11,7 @@ import {{SMODEL}RelationData,{SMODEL}Created} from "@/services/{SMODULE}/{SMODEL
 
 export default {
     name: "{MODEL}AddForm",
+    props:['data'],
     data() {
         return {
             form: this.$form.createForm(this),

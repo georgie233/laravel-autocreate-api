@@ -1,14 +1,14 @@
 <template>
     <span>
         <a-modal :width="900" v-model="visible" title="修改" ok-text="提交" cancel-text="取消" @ok="okFun">
-            <{MODEL}EditForm ref="form" :id='id'  @editComplete="editComplete"></{MODEL}EditForm>
+            <{MODEL}EditForm ref="form" :id='id' :data="data"  @editComplete="editComplete"></{MODEL}EditForm>
         </a-modal>
     </span>
 </template>
 
 <script>
 import {MODEL}EditForm from "./Form/{MODEL}EditForm";
-import {{SMODEL}Show} from "@/services/book/category";
+import {{SMODEL}Show} from "@/services/book/{SMODEL}";
 export default {
     name: "{MODEL}Edit",
     components: {{MODEL}EditForm},
