@@ -93,9 +93,6 @@ composer dumpautoload -o
 ```
 
 ```
-php artisan auto:init
-```
-```
 php artisan auto:auth
 ```
 ```
@@ -192,6 +189,102 @@ php artisan auto:api Book Book 书籍
 > 注意：如果使用到了多表关联，需给后端配置查询字段
 > 参考 " 其他 >  前端下拉框选项显示空白"
 
+### 命令说明
+
+##### auto:init
+
+```
+auto:init
+```
+
+> 初始化各种配置   
+>
+> 无参数
+
+主要功能：
+
+* 为composer.json 配置模块的自动加载 (autoload)
+* 复制中间件文件：AdminAuthMiddleware 并注册为路由中间件：admin_auth
+
+##### g:module 
+
+```
+g:module {name}
+```
+
+> 创建模块
+>
+> name：模块名称，建议大写开头
+
+主要功能：
+
+* 创建子模块 于 /Modules 下
+
+##### g:model
+
+```
+g:model {modelName} {moduleName}
+```
+
+> 创建模型
+>
+> modelName：模型名称，建议大写开头
+>
+> moduleName：模块名称，需为已存在的模块名
+
+主要功能：
+
+* 创建模型以及迁移于已存在的模块下：/Modules/{moduleName}/Entities      /Modules/{moduleName}/Database
+
+##### auto:auth
+
+```
+auto:auth
+```
+
+> 自动生成登录相关的文件
+>
+> 无参数
+
+主要功能：
+
+* 自动生成登录相关的文件 (迁移文件，模型，seeder，控制器) 并注册路由
+* 自动配置为中国语言包
+* AdminLoginController.php   控制器（业务逻辑）
+* BaseApiController.php     此版本以废弃使用（保留）
+* UserSeeder.php   用户数据库填充文件（生成站长账号）
+* ResponseHelper.php   api返回组手函数
+* AdminLogin.php   api_token模型文件（包括登录，注销等业务功能）
+* User.php   用户模型文件
+
+##### auto:api
+
+```
+auto:api {model} {module} {title} {--permission?} {--p?}
+```
+
+> 自动化构建
+>
+> model：已存在的模型名称 (要属于 module 模块以下)
+>
+> module：已存在的模块名称
+>
+> title：构建的默认 标题
+>
+> --permission：非必须参数  顺带执行  将权限配置文件插入权限表 
+>
+> --p：--permission的简写  效果同等
+
+主要功能：
+
+* 填充模型的illable
+* 为模型插入模型关联方法
+* 生成控制器 以及 模型验证器
+* 插入路由
+* 创建前端接口请求JS文件
+* 创建前端页面
+* 更新菜单配置文件
+* 更新权限配置文件
 
 ### 其他
 
