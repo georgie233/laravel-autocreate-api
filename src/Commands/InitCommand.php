@@ -76,6 +76,8 @@ str;
         $content = file_get_contents($url);
         if (stristr($content, 'admin_auth') === false) {
             $str = "'admin_auth' => \App\Http\Middleware\AdminAuthMiddleware::class,";
+            $str .= "
+                'permission'=>\App\Http\Middleware\AdminPermissionMiddleware::class,";
             $content = str_replace('$routeMiddleware = [','$routeMiddleware = [
                 '.$str,$content);
             file_put_contents($url, $content);

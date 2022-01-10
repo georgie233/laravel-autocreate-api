@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AdminLogin;
 use App\User;
+use App\utils\HttpCode;
 use App\utils\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -36,7 +37,7 @@ class AdminLoginController extends Controller
     {
         $model = $this->getTokenModel($request);
         $user = User::find($model['user_id']);
-        if (!$user) return ResponseHelper::errorMsg('用户不存在', 3);
+        if (!$user) return ResponseHelper::errorMsg('用户不存在', HttpCode::$Unauthorized);
         return AdminLogin::modeLogin($user, $model['token']);
     }
 
@@ -44,14 +45,14 @@ class AdminLoginController extends Controller
     {
         $model = $this->getTokenModel($request);
         $user = User::find($model['user_id']);
-        if (!$user) return ResponseHelper::errorMsg('用户不存在', 3);
+        if (!$user) return ResponseHelper::errorMsg('用户不存在', HttpCode::$Unauthorized);
         return ResponseHelper::successData(['check' => true]);
     }
 
     public function getToken($request)
     {
         $h = $request->header('Authorization');
-        if (!$h) throw new \Exception('令牌不能为空', 401);
+        if (!$h) throw new \Exception('令牌不能为空', HttpCode::$Unauthorized);
         return str_replace("Bearer ", "", $h);
     }
 
@@ -59,9 +60,16 @@ class AdminLoginController extends Controller
     {
         $token = $this->getToken($request);
         $json = Crypt::decrypt($token);
-        if (strtotime($json['expireAt']) < time()) throw new \Exception('登录信息已过期', 1);
+        if (strtotime($json['expireAt']) < time()) throw new \Exception('登录信息已过期', HttpCode::$Unauthorized);
         $model = AdminLogin::where('token', $token)->first();
-        if (!$model) throw new \Exception('登录信息无效', 2);
+        if (!$model) throw new \Exception('登录信息无效', HttpCode::$Unauthorized);
         return $model;
+    }
+
+    public function getUserModel($request){
+        $model = $this->getTokenModel($request);
+        $user = User::where('id',$model['id'])->first();
+        if (!$user) throw new \Exception('用户不存在', HttpCode::$Unauthorized);
+        return $user;
     }
 }

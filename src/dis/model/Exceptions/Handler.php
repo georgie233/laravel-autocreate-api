@@ -63,6 +63,6 @@ class Handler extends ExceptionHandler
 
     protected function replaceCode($code, $fit, $replace)
     {
-        return $code === $fit ? $replace : $fit;
+        return $code === $fit ? $replace : $code;
     }
 }

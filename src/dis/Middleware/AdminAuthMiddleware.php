@@ -17,7 +17,7 @@ class AdminAuthMiddleware
     public function handle($request, Closure $next)
     {
         $controllerHelper = new AdminLoginController();
-        $model = $controllerHelper->getTokenModel($request);
+        $model = $controllerHelper->getUserModel($request);
         $request->attributes->set('user', $model);
         return $next($request);
     }
