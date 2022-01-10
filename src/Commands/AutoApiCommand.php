@@ -69,6 +69,10 @@ class AutoApiCommand extends Command
         $this->createRoute(); //路由植入 √
         $this->createForeEndApiJs();//创建前端接口js √
         $this->createViews();//创建视图  待完善
+
+        $this->fillMenu();//填充菜单
+        $this->fillPermission();//填充权限
+
         $this->info('success');
 
         //---
@@ -127,7 +131,7 @@ class AutoApiCommand extends Command
         $content = file_get_contents($api_url);
         $keys = '';
         foreach ($arr as $key => $item) {
-            $keys .= $key.',';
+            $keys .= $key . ',';
             if (!stristr($content, $key)) {
                 $index = strrpos($content, '}');
                 $content = substr($content, 0, $index);
@@ -138,20 +142,20 @@ str;
                 $content .= "}";
             }
         }
-        $keys =  substr($keys, 0, strrpos($keys, ','));
+        $keys = substr($keys, 0, strrpos($keys, ','));
         file_put_contents($api_url, $content);
 
         //插入js文件(模型)
         $url = base_path('vue-cli/src/services/' . $this->vars['SMODULE'] . '/' . $this->vars['SMODEL'] . '.js');
         if (!is_dir($url)) {//不存在js才生成插入
-            $temp_url =  base_path('vue-cli/src/services/' . $this->vars['SMODULE']);
+            $temp_url = base_path('vue-cli/src/services/' . $this->vars['SMODULE']);
             is_dir($temp_url) or mkdir($temp_url);
             touch($url, 0755, true);
-            $this->setVar('IMPORT',$keys);
-            $this->setVar('API_PATH',$api_path_val);
-            $this->setVar('API_RELATION',$api_relation_val);
-            $content = $this->replaceVars(__DIR__.'/../Build/JavaScript/model_js.tpl');
-            file_put_contents($url,$content);
+            $this->setVar('IMPORT', $keys);
+            $this->setVar('API_PATH', $api_path_val);
+            $this->setVar('API_RELATION', $api_relation_val);
+            $content = $this->replaceVars(__DIR__ . '/../Build/JavaScript/model_js.tpl');
+            file_put_contents($url, $content);
         }
     }
 
@@ -162,10 +166,10 @@ str;
         $vue_page_module = base_path('vue-cli/src/pages/' . $this->vars['SMODULE']);//vue页面模块文件夹路径
         if (!is_dir($vue_page_path)) return $this->error('vue-cli Page path non existent');//没有vue项目页面目录
         is_dir($vue_page_module) or mkdir($vue_page_module, 0755, true);
-        $vue_page_module_model = $vue_page_module .'/' . $this->vars['SMODEL'];//vue页面模型路径
+        $vue_page_module_model = $vue_page_module . '/' . $this->vars['SMODEL'];//vue页面模型路径
         is_dir($vue_page_module_model) or mkdir($vue_page_module_model, 0755, true);
         $this->page_root = $vue_page_module_model;
-        
+
         $this->createIndexVue();//创建前端列表页面
         $this->createIndexVueRoute();//创建前端列表页面的路由
     }
@@ -225,47 +229,6 @@ str;
 
     }
 
-
-//    protected function createRouteBak()
-//    {
-//        if ($this->module) {
-//            $file = $this->getVar('MODULE_PATH') . '/Http/routes.php';
-//        } else {
-//            $file = 'routes/web.php';
-//        }
-//        $route = file_get_contents($file);
-//        //检测路由
-//        if (strstr($route, "{$this->vars['SMODEL']}-route")) {
-//            return;
-//        }
-//        if ($this->module) {
-//            $route .= <<<str
-//\n
-////{$this->vars['SMODEL']}-route
-//Route::group(['middleware' => ['web'],'prefix'=>'{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
-//function () {
-//    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
-//});
-//str;
-//            $route .= <<<str
-//\n \n
-////{$this->vars['SMODEL']}-route-api
-//Route::group(['middleware' => ['api'],'prefix'=>'api/{$this->vars['SMODULE']}','namespace'=>"{$this->vars['NAMESPACE_HTTP']}\Controllers"],
-//function () {
-//    Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
-//});
-//str;
-//        } else {
-//            $route .= <<<str
-//\n
-////{$this->vars['SMODEL']}-route
-//Route::resource('{$this->vars['SMODEL']}', '{$this->vars['MODEL']}Controller');
-//str;
-//        }
-//        file_put_contents($file, $route);
-//        $this->info('route create successfully');
-//    }
-
     //创建控制器
     public function createController()
     {
@@ -274,7 +237,7 @@ str;
             //控制器已存在
             $content = file_get_contents($file);
             // echo $file;
-            if(!stristr($content,'Display a listing of the resource')){
+            if (!stristr($content, 'Display a listing of the resource')) {
                 return false;
             }
         }
@@ -450,5 +413,55 @@ str;
             }
         }
         return $str;
+    }
+
+    protected function fillMenu()
+    {
+        $url = base_path('Modules/' . ucfirst($this->module) . '/Config/menus.php');
+        $content = file_get_contents($url);
+        $content = str_replace('["title" => "网站配置", "permission" => "权限标识", "url" => "链接地址"],', '', $content);
+        $page_path = '/pages/' . $this->vars['SMODULE'] . '/' . $this->vars['SMODEL'];
+        $permission = "Modules\\" . $this->vars['MODULE'] . "\Http\Controllers\\" . $this->vars['MODEL'] . "Controller@index";
+        $item = '
+            ["title" => "' . $this->title . '列表", "permission" => "' . $permission . '", "url" => "' . $page_path . '"],';
+        if (!stristr($content,$item)){
+            //没有记录插入
+//            $this->info($item);
+            $index = strpos($content,"return");
+            $index = strpos($content,"menus",$index);
+            $index = strpos($content,"[",$index);
+            $content = substr($content,0,$index+1).$item.substr($content,$index+1);
+
+            file_put_contents($url,$content);
+        }
+    }
+
+    protected function fillPermission()
+    {
+        $url = base_path('Modules/' . ucfirst($this->module) . '/Config/permission.php');
+        $content = file_get_contents($url);
+        $content = str_replace("['title' => '添加栏目', 'name' => 'Modules\Admin\Http\Controllers\CategoryController@create', 'guard' => 'admin'],", '', $content);
+        $content = str_replace('文章管理',$this->vars['MODULE'].'管理',$content);
+        $permission_root = "Modules\\" . $this->vars['MODULE'] . "\Http\Controllers\\" . $this->vars['MODEL'] . "Controller@";
+        $title = $this->title;
+
+        $item = "
+            ['title' => '".$title."列表', 'name' => '".$permission_root."index', 'guard' => 'web'],";
+
+        if (!stristr($content,$item)){
+            //没有记录
+            $item .= "
+            ['title' => '添加".$title."', 'name' => '".$permission_root."create', 'guard' => 'web'],";
+            $item .= "
+            ['title' => '修改".$title."', 'name' => '".$permission_root."edit', 'guard' => 'web'],";
+            $item .= "
+            ['title' => '删除".$title."', 'name' => '".$permission_root."destory', 'guard' => 'web'],";
+
+            $index = strpos($content,"return");
+            $index = strpos($content,"permissions",$index);
+            $index = strpos($content,"[",$index);
+            $content = substr($content,0,$index+1).$item.substr($content,$index+1);
+        }
+        file_put_contents($url,$content);
     }
 }
