@@ -251,7 +251,7 @@ auto:auth
 * 自动生成登录相关的文件 (迁移文件，模型，seeder，控制器) 并注册路由
 * 自动配置为中国语言包
 * AdminLoginController.php   控制器（业务逻辑）
-* BaseApiController.php     此版本以废弃使用（保留）
+* BaseApiController.php     控制器继承的基础控制器（封装一些常规功能）
 * UserSeeder.php   用户数据库填充文件（生成站长账号）
 * ResponseHelper.php   api返回组手函数
 * AdminLogin.php   api_token模型文件（包括登录，注销等业务功能）
