@@ -5,20 +5,23 @@ namespace Georgie\AutoAPi\Commands;
 use Georgie\AutoAPi\Traits\CreateView;
 use Georgie\AutoAPi\Traits\Db;
 use Georgie\AutoAPi\Traits\BuildVars;
+use Georgie\AutoAPi\Traits\PermissionHelper;
 use Illuminate\Console\Command;
 use Artisan;
 use Storage;
 
 class AutoApiCommand extends Command
 {
-    use BuildVars, Db, CreateView;
+    use BuildVars, Db, CreateView, PermissionHelper;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'auto:api {model} {module} {title} {carry=n}';
+    protected $signature = 'auto:api {model} {module} {title}
+        {--permission : Auto insert permission to table}
+        {--p : Auto insert permission to table}';
 
     /**
      * The console command description.
@@ -46,7 +49,7 @@ class AutoApiCommand extends Command
 
     public function handle()
     {
-        $this->carry = ucfirst($this->argument('carry'));
+//        $this->carry = ucfirst($this->argument('carry'));
         $this->model = $this->argument('model');
         $this->module = $this->argument('module');
         $this->modelFile = config('modules.paths.modules') . '/' . $this->module . '/'
@@ -69,17 +72,14 @@ class AutoApiCommand extends Command
         $this->createRoute(); //路由植入 √
         $this->createForeEndApiJs();//创建前端接口js √
         $this->createViews();//创建视图  待完善
-
         $this->fillMenu();//填充菜单
         $this->fillPermission();//填充权限
+        //自动更新权限表
+        if ($this->option('permission') || $this->option('p')) {
+            $this->insertPermission();
+        }
 
         $this->info('success');
-
-        //---
-//        $this->createController();
-//        $this->createRequest();
-//        $this->createRoute();
-//        $this->createViews();
     }
 
     protected function setModelRelation()
@@ -424,15 +424,15 @@ str;
         $permission = "Modules\\" . $this->vars['MODULE'] . "\Http\Controllers\\" . $this->vars['MODEL'] . "Controller@index";
         $item = '
             ["title" => "' . $this->title . '列表", "permission" => "' . $permission . '", "url" => "' . $page_path . '"],';
-        if (!stristr($content,$item)){
+        if (!stristr($content, $item)) {
             //没有记录插入
 //            $this->info($item);
-            $index = strpos($content,"return");
-            $index = strpos($content,"menus",$index);
-            $index = strpos($content,"[",$index);
-            $content = substr($content,0,$index+1).$item.substr($content,$index+1);
+            $index = strpos($content, "return");
+            $index = strpos($content, "menus", $index);
+            $index = strpos($content, "[", $index);
+            $content = substr($content, 0, $index + 1) . $item . substr($content, $index + 1);
 
-            file_put_contents($url,$content);
+            file_put_contents($url, $content);
         }
     }
 
@@ -441,27 +441,27 @@ str;
         $url = base_path('Modules/' . ucfirst($this->module) . '/Config/permission.php');
         $content = file_get_contents($url);
         $content = str_replace("['title' => '添加栏目', 'name' => 'Modules\Admin\Http\Controllers\CategoryController@create', 'guard' => 'admin'],", '', $content);
-        $content = str_replace('文章管理',$this->vars['MODULE'].'管理',$content);
+        $content = str_replace('文章管理', $this->vars['MODULE'] . '管理', $content);
         $permission_root = "Modules\\" . $this->vars['MODULE'] . "\Http\Controllers\\" . $this->vars['MODEL'] . "Controller@";
         $title = $this->title;
 
         $item = "
-            ['title' => '".$title."列表', 'name' => '".$permission_root."index', 'guard' => 'web'],";
+            ['title' => '" . $title . "列表', 'name' => '" . $permission_root . "index', 'guard' => 'web'],";
 
-        if (!stristr($content,$item)){
+        if (!stristr($content, $item)) {
             //没有记录
             $item .= "
-            ['title' => '添加".$title."', 'name' => '".$permission_root."create', 'guard' => 'web'],";
+            ['title' => '添加" . $title . "', 'name' => '" . $permission_root . "create', 'guard' => 'web'],";
             $item .= "
-            ['title' => '修改".$title."', 'name' => '".$permission_root."edit', 'guard' => 'web'],";
+            ['title' => '修改" . $title . "', 'name' => '" . $permission_root . "edit', 'guard' => 'web'],";
             $item .= "
-            ['title' => '删除".$title."', 'name' => '".$permission_root."destory', 'guard' => 'web'],";
+            ['title' => '删除" . $title . "', 'name' => '" . $permission_root . "destory', 'guard' => 'web'],";
 
-            $index = strpos($content,"return");
-            $index = strpos($content,"permissions",$index);
-            $index = strpos($content,"[",$index);
-            $content = substr($content,0,$index+1).$item.substr($content,$index+1);
+            $index = strpos($content, "return");
+            $index = strpos($content, "permissions", $index);
+            $index = strpos($content, "[", $index);
+            $content = substr($content, 0, $index + 1) . $item . substr($content, $index + 1);
         }
-        file_put_contents($url,$content);
+        file_put_contents($url, $content);
     }
 }
