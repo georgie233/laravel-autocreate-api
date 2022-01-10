@@ -22,9 +22,11 @@ class UserSeeder extends Seeder
 
     public function run()
     {
-        if (\Spatie\Permission\Models\Role::where('name', 'webmaster')->count()) return;
-        $role = \Spatie\Permission\Models\Role::create(['name' => 'webmaster', 'nick_name' => '站长']);
-        $user = \App\User::create($this->userData);
-        $user->assignRole('webmaster');
+        if (\Spatie\Permission\Models\Role::where('name', 'webmaster')->count() === 0)
+            $role = \Spatie\Permission\Models\Role::create(['name' => 'webmaster', 'nick_name' => '站长']);
+        if (\App\User::where('name', $this->userData['name'])->count() === 0){
+            $user = \App\User::create($this->userData);
+            $user->assignRole('webmaster');
+        }
     }
 }
