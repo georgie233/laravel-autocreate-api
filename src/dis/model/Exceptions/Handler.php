@@ -56,8 +56,13 @@ class Handler extends ExceptionHandler
             if ($this->isHttpException($exception)) {
                 if ($exception->getStatusCode() == '404') return ResponseHelper::errorMsg('Link does not exist', 404);
             }
-            return ResponseHelper::errorMsg('系统错误', (int)$exception->getCode(), $exception->getMessage());
+            return ResponseHelper::errorMsg('系统错误', $this->replaceCode((int)$exception->getCode(), 0, 500), $exception->getMessage());
         }
         return parent::render($request, $exception);
+    }
+
+    protected function replaceCode($code, $fit, $replace)
+    {
+        return $code === $fit ? $replace : $fit;
     }
 }
