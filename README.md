@@ -149,6 +149,7 @@ php artisan g:model Category Book
 > 书写迁移文件 例：
 
 ```
+// Modules/Book/Database/Migrations/yyyy_mm_dd_books_categories_table.php
 Schema::create('books', function (Blueprint $table) {
     $table->increments('id');
     $table->timestamps();
@@ -161,6 +162,8 @@ Schema::create('books', function (Blueprint $table) {
     $table->integer('categories_id')->comment('分类|select|&book/category');
 });
 
+
+// Modules/Book/Database/Migrations/yyyy_mm_dd_create_categories_table.php
 Schema::create('categories', function (Blueprint $table) {
     $table->increments('id');
     $table->timestamps();
