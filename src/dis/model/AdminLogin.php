@@ -64,12 +64,20 @@ class AdminLogin extends Model
     {
         $arr = [];
         $webmasterName = config('georgie_config.webmaster');
-        //如果该用户是站长直接返回空数组  因为在角色权限那里已经列出所有
-        if ($model->roles()->where('roles.name', $webmasterName)->count() > 0) return $arr;
-        foreach ($model->getDirectPermissions() as $directPermission) {
+        $permissions = [];
+        //如果该用户是站长直接返回空全部
+        if ($model->roles()->where('roles.name', $webmasterName)->count() > 0) $permissions = Permission::get(['id','name']);
+        else $permissions = $model->permissions()->get(['id','name']);
+
+
+        $arrangement = [];//保存临时整理数组
+        foreach ($permissions as $p) {
+            $arrangement[explode('@',$p['name'])[0]][] = $p->toArray();
+        }
+        foreach ($arrangement as $key=>$item) {
             $arr[] = [
-                'id' => $directPermission['name'],
-                'operation' => [$directPermission['name']],
+                'id'=>$key,
+                'operation'=>$item
             ];
         }
         return $arr;
@@ -78,36 +86,10 @@ class AdminLogin extends Model
     protected static function getWebRoles($model)
     {
         $arr = [];// 拥有角色列表
-        $hasPermissions = [];//拥有权限列表 用于排除重复
-        $webmasterName = config('georgie_config.webmaster');
-        $roleWithPermissions = [];//通过角色获取全选
-
-        if ($model->roles()->where('roles.name', $webmasterName)->count() > 0) {
-            //如果是站长直接返回站长角色和所有权限
-            $roleWithPermissions[] = [
-                'id' => Role::where('name', $webmasterName)->first()['id'],
-                'name' => $webmasterName,
-                'permissions' => Permission::get(['id', 'name'])->toArray(),
-            ];
-        } else{
-            //非站长则读取所有角色
-            $roleWithPermissions = $model->roles()->with('permissions')->get()->toArray();
-        }
-
-        //循环格式化获取得到的权限
-        foreach ($roleWithPermissions as $item) {
-            $permissions = [];
-            if (isset($item['permissions'])) {
-                foreach ($item['permissions'] as $p) {
-                    if (in_array($p['name'], $hasPermissions)) continue;//如果其他角色已经拥有该权限 则忽略此条权限
-                    $permissions[] = $p['name'];
-                    $hasPermissions[] = $p['name'];
-                }
-            }
+        foreach ($model->roles as $role) {
             $arr[] = [
-                'id' => $item['name'],
-                'id_' => $item['id'],
-                'operation' => $permissions,
+                'id' => $role['name'],
+                'operation'=>[]
             ];
         }
         return $arr;
