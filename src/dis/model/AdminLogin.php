@@ -72,9 +72,13 @@ class AdminLogin extends Model
 
         $arrangement = [];//保存临时整理数组
         foreach ($permissions as $p) {
-            $arrangement[explode('@',$p['name'])[0]][] = $p->toArray();
+            $arrangement[explode('@',$p['name'])[0]][] = $p->name;
         }
         foreach ($arrangement as $key=>$item) {
+//            $arr[] = [
+//                'id'=>$key,
+//                'operation'=>$item
+//            ];
             $arr[] = [
                 'id'=>$key,
                 'operation'=>$item
@@ -89,7 +93,7 @@ class AdminLogin extends Model
         foreach ($model->roles as $role) {
             $arr[] = [
                 'id' => $role['name'],
-                'operation'=>[]
+//                'operation'=>[]
             ];
         }
         return $arr;
