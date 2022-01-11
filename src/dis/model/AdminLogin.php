@@ -23,8 +23,8 @@ class AdminLogin extends Model
         }
         $expireAt = Crypt::decrypt($token)['expireAt'];
         $data = [
-            'permissions' => [],
-            'roles' => [],
+            'permissions' => self::getWebPermissions($model),//获取所有角色
+            'roles' => self::getWebRoles($model),//获取所有权限
             'user' => $model,
             'token' => $token,
             'expireAt' => $expireAt,
@@ -40,8 +40,9 @@ class AdminLogin extends Model
         return self::modeLogin($user);
     }
 
-    public static function logout($token){
-        $bool = AdminLogin::where('token',$token)->delete();
+    public static function logout($token)
+    {
+        $bool = AdminLogin::where('token', $token)->delete();
         return $bool;
     }
 
@@ -55,5 +56,39 @@ class AdminLogin extends Model
         if ($time >= 12 && $time < 14) return '中午好 工作愉快哦!';
         if ($time >= 14 && $time < 18) return '下午好 工作愉快哦!';
         if ($time >= 18 && $time < 23) return '晚上好 该休息了!';
+    }
+
+    protected static function getWebPermissions($model)
+    {
+        $arr = [];
+        foreach ($model->getDirectPermissions() as $directPermission) {
+            $arr[] = [
+                'id' => $directPermission['name'],
+                'operation' => [$directPermission['name']],
+            ];
+        }
+        return $arr;
+    }
+
+    protected static function getWebRoles($model)
+    {
+        $arr = [];// 拥有角色列表
+        $hasPermissions = [];//拥有权限列表 用于排除重复
+        foreach ($model->roles()->with('permissions')->get()->toArray() as $item) {
+            $permissions = [];
+            if (isset($item['permissions'])){
+                foreach ($item['permissions'] as $p) {
+                    if (in_array($p['name'],$hasPermissions)) continue;//如果其他角色已经拥有该权限 则忽略此条权限
+                    $permissions[] = $p['name'];
+                    $hasPermissions[] = $p['name'];
+                }
+            }
+            $arr[] = [
+                'id' => $item['name'],
+                'id_' => $item['id'],
+                'operation' => $permissions,
+            ];
+        }
+        return $arr;
     }
 }
