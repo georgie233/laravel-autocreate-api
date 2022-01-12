@@ -1,7 +1,7 @@
 <template>
     <span>
         <a-modal :width="900" v-model="visible" title="添加" ok-text="提交" cancel-text="取消" @ok="okFun">
-            <{MODEL}AddForm ref="form"  @addComplete="addComplete"></{MODEL}AddForm>
+            <{MODEL}AddForm ref="form" :data="{}" @addComplete="addComplete"></{MODEL}AddForm>
         </a-modal>
     </span>
 </template>
