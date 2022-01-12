@@ -2,7 +2,7 @@
     <a-card>
         <a-row>
             <div v-for="(item,index) in search" :key="index">
-                <a-col :md="8" :sm="24" v-if="shrink && item.shrink || !item.shrink">
+                <a-col :lg="8" :md="12" :sm="24" v-if="shrink && item.shrink || !item.shrink">
                     <a-form-item
                         :label="item.title"
                         :labelCol="{span: 4}"
@@ -11,7 +11,7 @@
                     </a-form-item>
                 </a-col>
             </div>
-            <a-col :md="8" :sm="24">
+            <a-col :lg="8" :md="12" :sm="24">
                 <a-form-item
                     label="时间"
                     :labelCol="{span: 4}"
