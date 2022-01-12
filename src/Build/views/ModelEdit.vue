@@ -8,7 +8,7 @@
 
 <script>
 import {MODEL}EditForm from "./Form/{MODEL}EditForm";
-import {{SMODEL}Show} from "@/services/book/{SMODEL}";
+import {{SMODEL}Show} from "@/services/{SMODULE}/{SMODEL}";
 export default {
     name: "{MODEL}Edit",
     components: {{MODEL}EditForm},

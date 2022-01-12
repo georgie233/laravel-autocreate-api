@@ -39,6 +39,9 @@ trait CreateView
             $index = stripos($content, $module_str);
             $index = stripos($content, 'children', $index);
             $index = stripos($content, '[', $index);
+            $module_ = $this->vars['MODULE'];
+            $model_ = $this->vars['MODEL'];
+            $authority = 'Modules\\\\'.$module_.'\\\\Http\\\\Controllers\\\\'.$model_.'Controller';
             $str = <<<str
 
                     {
@@ -46,7 +49,7 @@ trait CreateView
                         name: '{$this->title}列表',
                         model: '{$this->vars['SMODEL']}',
                         meta: {
-                            authority: 'Modules\\{$this->vars['MODULE']}\\Http\\Controllers\\{$this->vars['MODEL']}Controller',
+                            authority: '{$authority}',
                         },
                         component: () => import('@/pages/{$this->vars['SMODULE']}/{$this->vars['SMODEL']}'),
                     },

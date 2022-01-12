@@ -30,12 +30,12 @@
             <a-col style="margin-top: 10px;">
                 <a-button type="primary" style="margin-right: 5px;" @click="created" v-auth="authorize.created">新建</a-button>
                 <{MODEL}Add ref="{MODEL}Add" @addComplete="searchClick"></{MODEL}Add>
-                <a-dropdown>
+                <a-dropdown v-if="selectedRows.length > 0">
                     <a-menu slot="overlay">
                         <a-menu-item @click="destory" key="delete" v-auth="authorize.destory">删除</a-menu-item>
                     </a-menu>
                     <a-button>
-                        更多操作
+                        批量操作
                         <a-icon type="down"/>
                     </a-button>
                 </a-dropdown>

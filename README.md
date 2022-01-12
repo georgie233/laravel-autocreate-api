@@ -82,12 +82,13 @@ php artisan vendor:publish --provider="Georgie\Module\LaravelServiceProvider"
 ### 初始化
 
 ```
-php artisan auto:init
+php artisan g:module Admin
 ```
 
 ```
-php artisan g:module Api
+php artisan auto:init
 ```
+
 ```
 composer dumpautoload -o
 ```

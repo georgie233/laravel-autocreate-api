@@ -29,23 +29,21 @@ class InitCommand extends Base
 
     public function handle()
     {
-        $this->handleVue();
-        $this->handleComposer();
-        $this->handMiddleware();
+        $this->handleComposer();//处理composer.json
+        $this->handMiddleware();//处理中间件
+        $this->handleModule();//处理Admin模块
+        $this->handleVue();//处理前端
+    }
+
+    protected function handleModule(){
+        $url = base_path('Modules/Admin');
+        if (!is_dir($url))return $this->warn('no admin module');
     }
 
     protected function handleVue()
     {
-//        try {
-//            //初始化vue main.js cs
-//            $u = __DIR__ . '/../resources/vue_cli/src/main.ts';
-//            $url = base_path('vue-cli/src/main.ts');
-//            $content = file_get_contents($u);
-//            file_put_contents($url, $content);
-//
-//        } catch (\Exception $exception) {
-//            $this->error($exception->getMessage());
-//        }
+        $url = base_path('Modules/Admin');
+        if (!is_dir($url))return $this->warn('you can execute \'php artisan g:module Admin\' before executing');
     }
 
     protected function handleComposer()
