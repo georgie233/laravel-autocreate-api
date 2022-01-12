@@ -66,9 +66,10 @@ class AdminLoginController extends Controller
         return $model;
     }
 
-    public function getUserModel($request){
+    public function getUserModel($request)
+    {
         $model = $this->getTokenModel($request);
-        $user = User::where('id',$model['id'])->first();
+        $user = User::where('id', $model['user_id'])->first();
         if (!$user) throw new \Exception('用户不存在', HttpCode::$Unauthorized);
         return $user;
     }

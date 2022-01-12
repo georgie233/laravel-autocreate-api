@@ -66,22 +66,22 @@ class AdminLogin extends Model
         $webmasterName = config('georgie_config.webmaster');
         $permissions = [];
         //如果该用户是站长直接返回空全部
-        if ($model->roles()->where('roles.name', $webmasterName)->count() > 0) $permissions = Permission::get(['id','name']);
-        else $permissions = $model->permissions()->get(['id','name']);
+        if ($model->roles()->where('roles.name', $webmasterName)->count() > 0) $permissions = Permission::get(['id', 'name']);
+        else $permissions = $model->permissions()->get(['id', 'name']);
 
 
         $arrangement = [];//保存临时整理数组
         foreach ($permissions as $p) {
-            $arrangement[explode('@',$p['name'])[0]][] = $p->name;
+            $arrangement[explode('@', $p['name'])[0]][] = $p->name;
         }
-        foreach ($arrangement as $key=>$item) {
+        foreach ($arrangement as $key => $item) {
 //            $arr[] = [
 //                'id'=>$key,
 //                'operation'=>$item
 //            ];
             $arr[] = [
-                'id'=>$key,
-                'operation'=>$item
+                'id' => $key,
+                'operation' => $item,
             ];
         }
         return $arr;
