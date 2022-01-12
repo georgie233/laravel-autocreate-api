@@ -138,7 +138,7 @@ export default {
                 cancelText: '取消',
                 onOk() {
                     const id = that.getSelectRowKeys().join(',');
-                    const hide = this.$message.loading('正在删除...', 0);
+                    const hide = that.$message.loading('正在删除...', 0);
                     setTimeout(hide, 5000);
                     {SMODEL}Destroy(id).then(res => {
                         hide();
