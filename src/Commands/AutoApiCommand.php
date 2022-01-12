@@ -445,11 +445,14 @@ str;
         $permission_root = "Modules\\" . $this->vars['MODULE'] . "\Http\Controllers\\" . $this->vars['MODEL'] . "Controller@";
         $title = $this->title;
 
-        $item = "
-            ['title' => '" . $title . "列表', 'name' => '" . $permission_root . "index', 'guard' => 'web'],";
+        $item = "['title' => '" . $title . "列表', 'name' => '" . $permission_root . "index', 'guard' => 'web'],";
 
         if (!stristr($content, $item)) {
-            //没有记录
+            //没有模型权限记录
+            //插入换行符
+            $item = '
+            '.$item.'
+            ';
             $item .= "
             ['title' => '添加" . $title . "', 'name' => '" . $permission_root . "create', 'guard' => 'web'],";
             $item .= "
@@ -462,6 +465,18 @@ str;
             $index = strpos($content, "[", $index);
             $content = substr($content, 0, $index + 1) . $item . substr($content, $index + 1);
         }
+        $module_permission ="['title' => '{$this->vars['MODULE']}模块访问权限', 'name' => 'Modules\\{$this->vars['MODULE']}', 'guard' => 'web'],";
+        if (!stristr($content, $module_permission)) {
+            //没有模块的权限记录
+            $index = strpos($content, "return");
+            $index = strpos($content, "permissions", $index);
+            $index = strpos($content, "[", $index);
+            //插入换行符
+            $module_permission = '
+            '.$module_permission.'
+            ';
+            $content = substr($content, 0, $index + 1) . $module_permission . substr($content, $index + 1);
+        };
         file_put_contents($url, $content);
     }
 }
