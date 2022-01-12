@@ -27,13 +27,16 @@ export default {
         submit() {
             this.form.validateFields((err, values) => {
                 if (!err) {
+                    const hide = this.$message.loading('正在修改...', 0);
+                    setTimeout(hide, 5000);
                     values['id'] = this.id;
                     {SMODEL}Update(values).then(res=>{
+                        hide();
                         let data = res.status===200?res.data:[];
-                        if (!data)return this.$message.error('提交失败');
+                        if (!data)return this.$message.error('修改失败');
                         if (data.code !== 200)return this.$message.error(data.message);
                         this.$message.success(data.message??'修改成功');
-                        this.$emit('addComplete',values);
+                        this.$emit('editComplete',values);
                     });
                 }
             })

@@ -27,12 +27,15 @@ export default {
         submit() {
             this.form.validateFields((err, values) => {
                 if (!err) {
+                    const hide = this.$message.loading('正在添加...', 0);
+                    setTimeout(hide, 5000);
                     {SMODEL}Created(values).then(res=>{
+                        hide();
                         let data = res.status===200?res.data:[];
-                        if (!data)return this.$message.error('提交失败');
+                        if (!data)return this.$message.error('添加失败');
                         if (data.code !== 200)return this.$message.error(data.message);
                         this.$message.success(data.message??'添加成功');
-                        this.$emit('editComplete',values);
+                        this.$emit('addComplete',values);
                     });
                 }
             })

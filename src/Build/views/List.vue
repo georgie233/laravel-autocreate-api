@@ -70,7 +70,7 @@
         </standard-table>
 
 
-        <{MODEL}Edit ref="{MODEL}Edit" @editComplete="searchClick"></{MODEL}Edit>
+        <{MODEL}Edit ref="{MODEL}Edit" @editComplete="getList"></{MODEL}Edit>
     </a-card>
 </template>
 
@@ -138,7 +138,10 @@ export default {
                 cancelText: '取消',
                 onOk() {
                     const id = that.getSelectRowKeys().join(',');
+                    const hide = this.$message.loading('正在删除...', 0);
+                    setTimeout(hide, 5000);
                     {SMODEL}Destroy(id).then(res => {
+                        hide();
                         const data = res.data;
                         if (data.code === 200) {
                             that.$message.success('删除成功');
