@@ -4,6 +4,7 @@
     module: '{SMODULE}',
     meta: {
         icon: 'menu',
+        authority: 'Modules\\{MODULE}',
     },
     component: BlankView,
     children: [

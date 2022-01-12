@@ -45,6 +45,9 @@ trait CreateView
                         path: '{$this->vars['SMODEL']}',
                         name: '{$this->title}列表',
                         model: '{$this->vars['SMODEL']}',
+                        meta: {
+                            authority: 'Modules\\{$this->vars['MODULE']}\\Http\\Controllers\\{$this->vars['MODEL']}Controller',
+                        },
                         component: () => import('@/pages/{$this->vars['SMODULE']}/{$this->vars['SMODEL']}'),
                     },
 
