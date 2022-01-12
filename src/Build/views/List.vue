@@ -1,16 +1,16 @@
 <template>
     <a-card>
         <a-row>
-
-            <a-col :md="8" :sm="24" v-for="(item,index) in search" :key="index">
-                <a-form-item
-                    :label="item.title"
-                    :labelCol="{span: 4}"
-                    :wrapperCol="{span: 18, offset: 1}">
-                    <a-input v-model="item.value" placeholder="请输入"/>
-                </a-form-item>
-            </a-col>
-
+            <div v-for="(item,index) in search" :key="index">
+                <a-col :md="8" :sm="24" v-if="shrink && item.shrink || !item.shrink">
+                    <a-form-item
+                        :label="item.title"
+                        :labelCol="{span: 4}"
+                        :wrapperCol="{span: 18, offset: 1}">
+                        <a-input v-model="item.value" placeholder="请输入"/>
+                    </a-form-item>
+                </a-col>
+            </div>
             <a-col :md="8" :sm="24">
                 <a-form-item
                     label="时间"
@@ -20,6 +20,12 @@
                 </a-form-item>
             </a-col>
         </a-row>
+        <div style="display: flex;justify-content: center;">
+            <a @click="shrink = !shrink">
+                {{ shrink ? '收起' : '展开' }}
+                <a-icon :type="shrink ? 'up' : 'down'"/>
+            </a>
+        </div>
         <a-row type="flex" justify="space-between">
             <a-col style="margin-top: 10px;">
                 <a-button type="primary" style="margin-right: 5px;" @click="created" v-auth="authorize.created">新建</a-button>
@@ -37,10 +43,6 @@
             <a-col style="margin-top: 10px;">
                 <a-button @click="searchClick" type="primary">查询</a-button>
                 <a-button @click="resetClick" style="margin-left: 8px">重置</a-button>
-                <!--<a @click="advanced = !advanced" style="margin-left: 8px">-->
-                <!-- {{ advanced ? '收起' : '展开' }}-->
-                <!-- <a-icon :type="advanced ? 'up' : 'down'"/>-->
-                <!-- </a>-->
             </a-col>
         </a-row>
         <standard-table

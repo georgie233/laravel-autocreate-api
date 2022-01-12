@@ -78,13 +78,13 @@ str;
     {
         $columns = $this->formatColumns();
         $arr = ['input', 'simditor'];//允许搜索的字段类型
-        $select_str = "{title: '编号', dataIndex: 'search_id', value: '', condition: '='},";
+        $select_str = "{title: '编号', dataIndex: 'search_id', value: '', condition: '=',shrink:false},";
         $columns_str = "{title: '编号', dataIndex: 'id'},";
         foreach ($columns as $column) {
             $check = $column;
             if ($check && count($column['options']) <= 2) {//排除关联字段
                 if (in_array($column['options'][1], $arr)) {//属于允许搜索的字段
-                    $select_str .= "\n\t{title: '{$column['options'][0]}', dataIndex: 'search_{$column['name']}', value: '', condition: 'like'},";
+                    $select_str .= "\n\t{title: '{$column['options'][0]}', dataIndex: 'search_{$column['name']}', value: '', condition: 'like',shrink:true},";
                     $columns_str .= "\n\t{title: '{$column['options'][0]}', dataIndex: '{$column['name']}'},";
                 }
             }
