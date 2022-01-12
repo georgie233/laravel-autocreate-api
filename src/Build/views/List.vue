@@ -22,11 +22,11 @@
         </a-row>
         <a-row type="flex" justify="space-between">
             <a-col style="margin-top: 10px;">
-                <a-button type="primary" style="margin-right: 5px;" @click="$refs.{MODEL}Add.open()">新建</a-button>
+                <a-button type="primary" style="margin-right: 5px;" @click="created" v-auth="authorize.created">新建</a-button>
                 <{MODEL}Add ref="{MODEL}Add" @addComplete="searchClick"></{MODEL}Add>
                 <a-dropdown>
                     <a-menu slot="overlay">
-                        <a-menu-item @click="batchDeleteClick" key="delete">删除</a-menu-item>
+                        <a-menu-item @click="destory" key="delete" v-auth="authorize.destory">删除</a-menu-item>
                     </a-menu>
                     <a-button>
                         更多操作
@@ -58,18 +58,18 @@
                 {{ record.name }}
             </div>
             <div slot="action" slot-scope="{record}">
-                <a style="margin-right: 8px" @click="$refs.{MODEL}Edit.open(record.id)">
+                <a style="margin-right: 8px" @click="edit(record.id)" v-auth="authorize.edit">
                     <a-icon type="edit"/>
                     编辑
                 </a>
-                <a @click="deleteClick(record)">
+                <a @click="deleteClick(record)" v-auth="authorize.destory">
                     <a-icon type="delete"/>
                     删除
                 </a>
             </div>
         </standard-table>
 
-        
+
         <{MODEL}Edit ref="{MODEL}Edit" @editComplete="searchClick"></{MODEL}Edit>
     </a-card>
 </template>
@@ -81,7 +81,7 @@ import StandardTable from "@/components/table/StandardTable";
 import {{SMODEL}Destroy, {SMODEL}List} from "@/services/{SMODULE}/{SMODEL}";
 import {MODEL}Add from "./{MODEL}Add";
 import {MODEL}Edit from "./{MODEL}Edit";
-import {search,columns,withArr} from './index.js'
+import {search,columns,withArr,authorizeConfig} from './index.js'
 
 export default {
     name: '{MODEL}List',
@@ -92,6 +92,7 @@ export default {
             range_time: '',
             loading: false,
             selectedRows: [],
+            authorize: authorizeConfig,
             pagination: {
                 showSizeChanger: true,
                 pageSize: 10,
@@ -110,7 +111,14 @@ export default {
             return this.$t('description')
         }
     },
+    authorize: authorizeConfig,//权限校验配置
     methods: {
+        created(){
+            this.$refs.{MODEL}Add.open();
+        },
+        edit(id){
+            this.$refs.{MODEL}Edit.open(id);
+        },
         searchClick() {
             this.pagination.current = 1;
             this.selectedRows = [];
@@ -121,7 +129,7 @@ export default {
                 this.search[index].value = '';
             })
         },
-        batchDeleteClick() {
+        destory() {
             let that = this;
             this.$confirm({
                 title: '确定要执行删除? ',
@@ -142,7 +150,7 @@ export default {
         },
         deleteClick(e) {
             this.selectedRows = [e];
-            this.batchDeleteClick();
+            this.destory();
         },
         getSelectRowKeys() {
             let arr = [];
