@@ -148,7 +148,9 @@ str;
             if (isset($column['options']) && count($column['options']) === 2) {
                 //添加字段
                 $type = $column['options'][1];//字段类型
-                $url = __DIR__ . '/../Build/forms/' . $type . '.tpl';
+                $type_extend = '';
+                if ($column['formatType'] == 'number') $type_extend = '_number';
+                $url = __DIR__ . '/../Build/forms/' . $type.$type_extend . '.tpl';
                 $content = $this->replaceVars($url);//读取模板
                 $COLUMNS .= "\n" . $content;
             } else if (isset($column['options']) && count($column['options']) > 2) {//处理关联关系
