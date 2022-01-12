@@ -93,6 +93,7 @@ export default {
         return {
             range_time: '',
             loading: false,
+            shrink:true,
             selectedRows: [],
             authorize: authorizeConfig,
             pagination: {
