@@ -55,7 +55,8 @@ class InitCommand extends Base
         if (!is_dir($url)) return $this->warn('you can execute \'php artisan g:module Admin\' before executing');
         $url =base_path('vue-cli/src/pages');
         if(!is_dir($url)) return $this->warn('no vue-cli folder');
-//        if (is_dir(base_path('vue-cli/src/pages/admin/user/index.js')))return ;//已经存在前端
+        if (is_dir(base_path('vue-cli/src/pages/admin/user/index.js')))
+            return $this->info('\'vue-cli/src/pages/admin/user/index.js\'already exists, the following operation will not be performed');//已经存在前端
         $url1 = base_path('vue-cli');
         $url2 = __DIR__.'/../dis/vue-cli';
         $this->xCopy($url2, $url1, 1);

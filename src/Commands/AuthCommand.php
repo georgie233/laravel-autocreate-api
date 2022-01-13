@@ -59,8 +59,9 @@ class AuthCommand extends Base
 Route::group(['prefix' => 'admin'], function () {
     Route::post('login', 'AdminLoginController@login');
     Route::post('register', 'AdminLoginController@register');
-    Route::post('info', 'AdminLoginController@info');
-    Route::post('checkToken', 'AdminLoginController@checkToken');
+    Route::post('info', 'AdminLoginController@info')->middleware(['admin_auth','permission:web']);
+    Route::post('checkToken', 'AdminLoginController@checkToken')->middleware(['admin_auth','permission:web']);
+    Route::post('uploadFile', 'UploadFileController@uploadFile');
 });
 str;
         $content = str_replace($str, $str2, $content);
@@ -68,6 +69,16 @@ str;
             $content .= $str2;
         }
         file_put_contents($url, $content);
+
+        //替换web.php
+        $url = base_path("routes/web.php");
+        $content = file_get_contents($url);
+        $str = 'Route::get(\'upload/{url}\',\'UploadFileController@getUploadFile\');';
+        if(!stristr($content,'UploadFileController')){
+            $content .= $str;
+        }
+        file_put_contents($url, $content);
+
 
 
         $this->info("init success");

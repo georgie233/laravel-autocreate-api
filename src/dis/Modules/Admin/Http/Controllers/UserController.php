@@ -11,7 +11,8 @@ use Modules\Admin\Http\Requests\UserRequest;
 
 class UserController extends BaseApiController
 {
-    protected function excludeID($request){
+    protected function excludeID($request)
+    {
         //返回排除的用户id集：站长账号，当前登录账号
         $ids = User::role(config('georgie_config.webmaster'))->pluck('id')->toArray();
         $ids[] = $request->attributes->get('user')['id'];
@@ -22,7 +23,7 @@ class UserController extends BaseApiController
     public function index(Request $request, User $user)
     {
         $res = $request->all();
-        $res['search_id'] = '!=,'.implode('&!=,',$this->excludeID($request));
+        $res['search_id'] = '!=,' . implode('&!=,', $this->excludeID($request));
         $data = $this->handIndex($res, $user);
         //进行排除站长 和 登录用户本身
 
@@ -32,7 +33,7 @@ class UserController extends BaseApiController
     //保存数据 POST: /admin/user
     public function store(UserRequest $request, User $user)
     {
-        $data = $request->all();
+        $data = $this->getHandData($request);
         $data['password'] = bcrypt($data['password']);//密码加密
         $user->fill($data);
         $user->save();
@@ -51,20 +52,20 @@ class UserController extends BaseApiController
     {
         $data = $request->all();
         $ids = $this->excludeID($request);//禁止删除的
-        if (in_array($user['id'],$ids)) throw new \Exception('该操作已被禁止',403);
-        if (isset($data['password']))$data['password']  = bcrypt($data['password']);//加密密码
+        if (in_array($user['id'], $ids)) throw new \Exception('该操作已被禁止', 403);
+        if (isset($data['password'])) $data['password'] = bcrypt($data['password']);//加密密码
         $user->update($data);
         return ResponseHelper::successMsg('修改成功');
     }
 
     //删除模型 DELETE: /admin/user/id
-    public function destroy($user,Request $request)
+    public function destroy($user, Request $request)
     {
         $user = explode(',', $user);//获取所有要删除的
         $ids = $this->excludeID($request);//禁止删除的
-        foreach ($user as $u){
-            if (in_array($u,$ids))
-                throw new \Exception('该操作已被禁止',403);
+        foreach ($user as $u) {
+            if (in_array($u, $ids))
+                throw new \Exception('该操作已被禁止', 403);
         }
         User::whereIn('id', $user)->delete();
         return ResponseHelper::successMsg('删除成功');
