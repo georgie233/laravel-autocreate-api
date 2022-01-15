@@ -63,7 +63,7 @@ class AutoApiCommand extends Command
         }
         $this->title = $this->argument('title');
         $this->setVar('MODEL_TITLE', $this->title);//设置标题
-        $this->setVars();//设置默认参数
+        //$this->setVars();//设置默认参数
         $this->setModelInstance();
         $this->setModelFillable();//设置fillable √
         $this->setModelRelation();//设置模型关联 √
