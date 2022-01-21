@@ -144,7 +144,7 @@ str;
         $init_data_fun_str = '';//方法
         foreach ($this->formatColumns() as $column) {
             if (isset($column['options']) && count($column['options']) >= 2) {
-                $this->setVar("COLUMN['nonull']", $column['nonull']);
+                $this->setVar("COLUMN['nonull']", $column['nonull']?'true':'false');
                 $this->setVar("COLUMN['title']", $column['options'][0]);
                 $this->setVar("COLUMN['name']", $column['name']);
                 $this->setVar("COLUMN['type']", $column['type']);
