@@ -18,7 +18,8 @@ trait CreateView
     }
 
     //创建index.js
-    protected function createIndexJs(){
+    protected function createIndexJs()
+    {
         $file_path = $this->page_root . '/index.js';
         $content = $this->replaceVars(__DIR__ . '/../Build/views/index.js');
         file_put_contents($file_path, $content);
@@ -41,7 +42,7 @@ trait CreateView
             $index = stripos($content, '[', $index);
             $module_ = $this->vars['MODULE'];
             $model_ = $this->vars['MODEL'];
-            $authority = 'Modules\\\\'.$module_.'\\\\Http\\\\Controllers\\\\'.$model_.'Controller';
+            $authority = 'Modules\\\\' . $module_ . '\\\\Http\\\\Controllers\\\\' . $model_ . 'Controller';
             $str = <<<str
 
                     {
@@ -143,17 +144,18 @@ str;
         $init_data_fun_str = '';//方法
         foreach ($this->formatColumns() as $column) {
             if (isset($column['options']) && count($column['options']) >= 2) {
+                $this->setVar("COLUMN['nonull']", $column['nonull']);
                 $this->setVar("COLUMN['title']", $column['options'][0]);
                 $this->setVar("COLUMN['name']", $column['name']);
-                $this->setVar("COLUMN['type']",$column['type']);
-                $this->setVar("COLUMN['formatType']",$column['formatType']);
+                $this->setVar("COLUMN['type']", $column['type']);
+                $this->setVar("COLUMN['formatType']", $column['formatType']);
             }
             if (isset($column['options']) && count($column['options']) === 2) {
                 //添加字段
                 $type = $column['options'][1];//字段类型
                 $type_extend = '';
                 if ($column['formatType'] == 'number') $type_extend = '_number';
-                $url = __DIR__ . '/../Build/forms/' . $type.$type_extend . '.tpl';
+                $url = __DIR__ . '/../Build/forms/' . $type . $type_extend . '.tpl';
                 $content = $this->replaceVars($url);//读取模板
                 $COLUMNS .= "\n" . $content;
             } else if (isset($column['options']) && count($column['options']) > 2) {//处理关联关系
