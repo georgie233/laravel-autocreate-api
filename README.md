@@ -327,6 +327,18 @@ public function handle($request, Closure $next)
     return $next($request);
 }
 ```
+##### 前端刷新权限代码片段
+```
+info().then(res=>{
+    const loginRes = res.data;
+        if (loginRes.code === 200) {
+        const {permissions} = loginRes.data
+        this.setPermissions(permissions)
+        this.$router.go(0);
+    }
+})
+```
+
 ```
 前端请避免用127.0.0.1 或者 localhost 打开（可能会导致跨域）
 ```
