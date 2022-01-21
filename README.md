@@ -86,11 +86,11 @@ php artisan g:module Admin
 ```
 
 ```
-php artisan auto:init
+composer dumpautoload -o
 ```
 
 ```
-composer dumpautoload -o
+php artisan auto:init
 ```
 
 ```
