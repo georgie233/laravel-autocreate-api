@@ -2,7 +2,7 @@
     <a-select
             v-if="selectData['{OBJMODEL}'] && selectData['{OBJMODEL}'].length"
             v-decorator="['{COLUMN['name']}', {rules: [{ required: true, message: '请选择'}],
-            initialValue:data.categories_id?data.categories_id:selectData['category'][0][Object.keys(selectData['category'][0])[0]]}]"
+            initialValue:data.{COLUMN['name']}?data.{COLUMN['name']}:selectData['{OBJMODEL}'][0][Object.keys(selectData['{OBJMODEL}'][0])[0]]}]"
     >
         <a-select-option v-for="(item,index) in selectData['{OBJMODEL}']" :value="item[Object.keys(item)[0]]" :key="index">
             {{ item[Object.keys(item)[1]] }}
