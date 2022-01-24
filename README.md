@@ -319,12 +319,17 @@ composer dump-autoloa
 ```phpt
 public function handle($request, Closure $next)
 {
-    header('Access-Control-Allow-Origin: http://192.168.0.185:8080');
-    header("Access-Control-Allow-Credentials: true");
-    header("Access-Control-Allow-Headers: Content-Type,Access-Token,Appid,Secret,Authorization,x-requested-with");
-    header("Access-Control-Allow-Methods: GET,POST,OPTIONS,PUT,DELETE");
-    header("Access-Control-Expose-Headers: *");
-    return $next($request);
+        $allow_origin = [
+            'http://192.168.0.185:8080',
+        ];
+        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+        if (!empty($origin) && in_array($origin, $allow_origin))
+            header('Access-Control-Allow-Origin: ' . $origin);
+        header("Access-Control-Allow-Credentials: true");
+        header("Access-Control-Allow-Headers: Content-Type,Access-Token,Appid,Secret,Authorization,x-requested-with");
+        header("Access-Control-Allow-Methods: GET,POST,OPTIONS,PUT,DELETE");
+        header("Access-Control-Expose-Headers: *");
+        return $next($request);
 }
 ```
 ##### 前端刷新权限代码片段
