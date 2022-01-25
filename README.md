@@ -291,6 +291,34 @@ auto:api {model} {module} {title} {--permission?} {--p?}
 * 更新菜单配置文件
 * 更新权限配置文件
 
+### 前端相关说明
+
+##### 文件配置
+路由配置在：`/src/router/config.js`
+页面生成在: `/src/pages/module/model`
+
+##### 页面配置说明index.js
+
+search 搜索显示数组参数说明
+* title 显示的字段解释
+* dataIndex 该字段在json数据中的字段名
+* value 默认值
+* condition 搜索条件 有：`=` `>` `>=` `<` `<=` `like`
+* shrink 是否可被收缩
+
+columns 列表显示数组参数说明
+* title 显示的字段解释
+* dataIndex 该字段在json数据中的字段名
+* scopedSlots 注册为自定义插槽  `scopedSlots: {customRender: '插槽名称'}`  需自己实现插槽
+* hideLabel 手机模式下是否隐藏标签
+
+withArr with查询数组参数说明
+* key 要关联查询到的参数key  如 with_store  则自动关联查询 store表
+* get 要关联查询到的内容  如 `name,img` 查询两个字段
+
+authorizeConfig 权限校验配置
+用于校验权限
+
 ### 其他
 
 ##### mysql版本太低执行迁移报错
