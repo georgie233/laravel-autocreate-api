@@ -96,6 +96,9 @@ str;
         $columns_str .= "\n\t{title: '操作', scopedSlots: {customRender: 'action'}, hideLabel: true}";
         $this->setVar('SEARCH_ARR', $select_str);//设置搜索数组
         $this->setVar('COLUMNS_ARR', $columns_str);//设置显示字段数组
+        $this->setVar('ADDFORMDATA','');//临时设置推荐表单的data
+        $this->setVar('IMPORT','');//引入
+        $this->setVar('COMPONENT','');//组件声明
     }
 
     protected function createIndexSon()
@@ -142,6 +145,7 @@ str;
         $select_data_str = '';//下拉框数组初始值
         $init_data_str = '';//initData()里面
         $init_data_fun_str = '';//方法
+        $add_form_data = '';//添加表单内的数据
         foreach ($this->formatColumns() as $column) {
             if (isset($column['options']) && count($column['options']) >= 2) {
                 $this->setVar("COLUMN['nonull']", $column['nonull']?'true':'false');
@@ -149,6 +153,10 @@ str;
                 $this->setVar("COLUMN['name']", $column['name']);
                 $this->setVar("COLUMN['type']", $column['type']);
                 $this->setVar("COLUMN['formatType']", $column['formatType']);
+
+                if($column['options'][1] == 'image'){
+                    $add_form_data .= $column['name']."_url: '',";
+                }
             }
             if (isset($column['options']) && count($column['options']) === 2) {
                 //添加字段
@@ -200,6 +208,12 @@ str;
                 }
             }
         }
+        if ($add_form_data){
+            $this->setVar('IMPORT','import UploadAvatar from "@/components/georgie/uploadAvatar"');//引入
+            $this->setVar('COMPONENT','UploadAvatar,');//组件声明
+
+        }
+        $this->setVar("ADDFORMDATA",$add_form_data);
 //        $this->info($COLUMNS);
         $this->setVar('FORMROWS', $COLUMNS);//表单
     }

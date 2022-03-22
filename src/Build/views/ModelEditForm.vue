@@ -9,15 +9,17 @@
 <script>
 import {{SMODEL}RelationData,{SMODEL}Update} from "@/services/{SMODULE}/{SMODEL}";
 import {UPLOAD_FILE} from "@/services/api";
-
+{IMPORT}
 export default {
     name: "{MODEL}AddForm",
     props:['id','data'],
+    components: {{COMPONENT}},
     data() {
         return {
             form: this.$form.createForm(this),
             upload_path:UPLOAD_FILE,
             selectData: {{SELECTDATA}},
+            {ADDFORMDATA}
         }
     },
     methods: {
