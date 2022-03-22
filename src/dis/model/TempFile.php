@@ -14,6 +14,9 @@ class TempFile extends Model
     public static function removeTmp($url){
         TempFile::where('url',$url)->delete();
     }
+    public static function removeTmpArr($arr){
+        TempFile::whereIn('url',$arr)->delete();
+    }
     public static function get($timeStr = null){
         $files =  TempFile::where('created_at','<',$timeStr??(date('Y-m-d H:i:s')))->get();
         return $files;

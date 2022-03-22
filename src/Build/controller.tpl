@@ -18,7 +18,7 @@ class {CONTROLLE_NAME} extends BaseApiController
     //保存数据 POST: /{SMODULE}/{SMODEL}
     public function store({MODEL}Request $request,{MODEL} ${SMODEL})
     {
-        $data = $request->all();
+        $data = $this->getRequestData($request,true);
         {STOREINSERT}
         ${SMODEL}->fill($data);
         ${SMODEL}->save();
@@ -35,7 +35,7 @@ class {CONTROLLE_NAME} extends BaseApiController
     //更新数据 PUT: /{SMODULE}/{SMODEL}/id
     public function update({MODEL}Request $request, {MODEL} ${SMODEL})
     {
-        $data = $request->all();
+        $data = $this->getRequestData($request,true);
         {UPDATEINSERT}
         ${SMODEL}->update($data);
         return ResponseHelper::successMsg('修改成功');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\TempFile;
 use App\utils\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -16,6 +17,21 @@ class BaseApiController extends Controller
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage(), 500);
         }
+    }
+
+    public function getRequestData($request,$del_tmp = false){
+        $data = $request->all();
+        $uploads = [];
+        foreach ($data as $key=>$d){
+            if (strstr($key,'upload__')){
+                array_push($uploads,$d);
+                $data[str_replace('upload__','',$key)] = $d;
+                unset($data[$key]);
+            }
+        }
+        if ($del_tmp && $uploads)
+            TempFile::removeTmpArr($uploads);//清除临时文件记录
+        return $data;
     }
 
     protected function handIndexFun($requestData, $model)
@@ -83,7 +99,7 @@ class BaseApiController extends Controller
 
         return $m;
     }
-    
+
     protected function handOrder($model, $requestData){
         $m = $model;
         foreach ($requestData as $k => $i) {
