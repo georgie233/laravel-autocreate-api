@@ -99,6 +99,7 @@ str;
         $this->setVar('ADDFORMDATA','');//临时设置推荐表单的data
         $this->setVar('IMPORT','');//引入
         $this->setVar('COMPONENT','');//组件声明
+        $this->setVar('TABLENAME',snake_case(str_plural($this->vars['SMODEL'])));
     }
 
     protected function createIndexSon()

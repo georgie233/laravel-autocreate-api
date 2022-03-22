@@ -9,6 +9,7 @@
 <script>
 import {{SMODEL}RelationData,{SMODEL}Created} from "@/services/{SMODULE}/{SMODEL}";
 import {UPLOAD_FILE} from "@/services/api";
+import {BASEURL} from "@/services/api";
 {IMPORT}
 
 export default {
@@ -17,6 +18,7 @@ export default {
     components: {{COMPONENT}},
     data() {
         return {
+            baseUrl:BASEURL,
             form: this.$form.createForm(this),
             upload_path:UPLOAD_FILE,
             selectData: {{SELECTDATA}},
