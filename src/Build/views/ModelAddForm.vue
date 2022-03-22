@@ -43,6 +43,9 @@ export default {
                         if (data.code !== 200)return this.$message.error(data.message);
                         this.$message.success(data.message??'添加成功');
                         this.$emit('addComplete',values);
+                        setTimeout(()=>{
+                            {INITDATA}
+                        },200);
                     });
                 }
             })

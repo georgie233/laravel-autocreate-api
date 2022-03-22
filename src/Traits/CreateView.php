@@ -180,6 +180,13 @@ str;
                         }
                         $this->setVar('FORM_HTML', $html);
                     } else if ($type == 'select') {
+                        if ($column['options'][3]){
+                            //有默认值  读取带默认值的模板
+                            $url = __DIR__ . '/../Build/forms/select_defalut.tpl';
+                            $def_arr = explode(':',$column['options'][3]);
+                            $this->setVar('SELECT_DEFAULT_VALUE',$def_arr[0]);
+                            $this->setVar('SELECT_DEFAULT_TEXT',$def_arr[1]);
+                        }
                         $model = $column['options'][2]['select']['model'];
                         $this->setVar('OBJMODEL', $model);
                         $select_data_str .= "{$model}:false,";//植入初始值

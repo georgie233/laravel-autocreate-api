@@ -37,8 +37,8 @@ class UploadFileController extends Controller
             $filename = time() . str_random(10) . '.' . $extend_name;//文件名
 
             $file->move($upload_url, $filename);//保存图片
-            $return_url = '/upload/' . $this->lock_url($route_url . '/' . $filename);
-            TempFile::insert(str_replace('/upload/', '', $return_url));
+            $return_url = $this->lock_url($route_url . '/' . $filename);
+            TempFile::insert($return_url);
 
             return ResponseHelper::successData(['url' => $return_url], '上传成功');
         }
