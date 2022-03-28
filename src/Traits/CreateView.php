@@ -180,7 +180,7 @@ str;
                         }
                         $this->setVar('FORM_HTML', $html);
                     } else if ($type == 'select') {
-                        if ($column['options'][3]){
+                        if (isset($column['options'][3])){
                             //有默认值  读取带默认值的模板
                             $url = __DIR__ . '/../Build/forms/select_defalut.tpl';
                             $def_arr = explode(':',$column['options'][3]);
